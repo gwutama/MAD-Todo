@@ -12,12 +12,14 @@ import java.util.Date;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 
 public class TodolistWebappClient {
 
-  private String apiRoot; // "http://192.168.1.191:8080/TodolistWebapp"
+  private static final String TAG = "TodolistWebappClient";
+  private String apiRoot;
 
 
   public TodolistWebappClient(String apiRoot) {
@@ -51,7 +53,11 @@ public class TodolistWebappClient {
 
 
   public String createTodo(String summary, String description, Date dueDateTime)
-      throws MalformedURLException, IOException {
+      throws MalformedURLException, IOException, IllegalArgumentException {
+    if (TextUtils.isEmpty(summary)) {
+      throw new IllegalArgumentException("Task summary cannot be empty");
+    }
+
     HttpURLConnection conn = null;
     String resp = null;
 
@@ -66,7 +72,7 @@ public class TodolistWebappClient {
       e.printStackTrace();
     }
 
-    Log.d("TodolistWebappClient", body.toString());
+    Log.d(TAG, body.toString());
 
     writeRequestBody(conn, body.toString());
     resp = readHttpResponse(conn);
@@ -98,11 +104,12 @@ public class TodolistWebappClient {
       throws IOException {
     HttpURLConnection conn = null;
 
+    Log.d(TAG, apiRoot.toString());
+    
     conn = (HttpURLConnection) apiRoot.openConnection();
     conn.setRequestMethod(requestMethod);
     conn.addRequestProperty("Accept", "application/json");
     conn.addRequestProperty("Content-type", "application/json; charset=UTF-8");
-    conn.connect();
 
     return conn;
   }

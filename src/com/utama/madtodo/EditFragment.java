@@ -11,8 +11,12 @@ import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.webkit.WebView.FindListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -48,8 +53,8 @@ public class EditFragment extends Fragment {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Log.d(TAG, "onCreate");
-    
-    setHasOptionsMenu(true);    
+
+    setHasOptionsMenu(true);
     setupDateTimeDialogs();
   }
 
@@ -96,12 +101,7 @@ public class EditFragment extends Fragment {
   private void setupDateTimeDialogs() {
     Log.d(TAG, "setDateTimeDialogs");
 
-    Calendar nowCalendar = Calendar.getInstance();
-    int year = nowCalendar.get(Calendar.YEAR);
-    int monthOfYear = nowCalendar.get(Calendar.MONTH);
-    int dayOfMonth = nowCalendar.get(Calendar.DAY_OF_MONTH);
-    int hourOfDay = nowCalendar.get(Calendar.HOUR_OF_DAY);
-    int minute = nowCalendar.get(Calendar.MINUTE);
+    Calendar now = Calendar.getInstance();
 
     dueDatePickerDialog = new DatePickerDialog(getActivity(), new OnDateSetListener() {
       @Override
@@ -110,7 +110,7 @@ public class EditFragment extends Fragment {
         String fmt = DateFormat.getDateInstance().format(dueDate.getTime());
         dueDateEditText.setText(fmt);
       }
-    }, year, monthOfYear, dayOfMonth);
+    }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
 
     dueTimePickerDialog = new TimePickerDialog(getActivity(), new OnTimeSetListener() {
       @Override
@@ -122,7 +122,7 @@ public class EditFragment extends Fragment {
         String fmt = DateFormat.getDateInstance().format(dueDate.getTime());
         dueTimeEditText.setText(fmt);
       }
-    }, hourOfDay, minute, true);
+    }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true);
   }
 
 
@@ -135,12 +135,11 @@ public class EditFragment extends Fragment {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
 
     if (id == R.id.action_settings) {
+      Log.d(TAG, "onOptionsItemSelected: action_settings");
+      startActivity(new Intent(getActivity(), SettingsActivity.class));
       return true;
     } else if (id == R.id.action_save) {
       Log.d(TAG, "onOptionsItemSelected: action_save");
@@ -156,35 +155,52 @@ public class EditFragment extends Fragment {
   }
 
 
-  private final class SaveAsync extends AsyncTask<String, Void, String> {
+  private final class SaveAsync extends AsyncTask<Void, Void, Integer> {
 
     @Override
-    protected String doInBackground(String... params) {
+    protected Integer doInBackground(Void... params) {
       Log.d(TAG, "SaveTask.doInBackground");
       TodolistWebappClient client;
 
       try {
-        client = new TodolistWebappClient("http://192.168.1.191:8080/TodolistWebapp/todos");
-        
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String apiRoot = pref.getString("apiRoot", "");
+        Log.d(TAG, "SaveTask.doInBackground apiRoot: " + apiRoot);
+        client = new TodolistWebappClient(apiRoot);
+
         String summary = summaryEditText.getText().toString();
         String description = descriptionEditText.getText().toString();
-        Date due = dueDate.getTime();        
-        
+        String dueDateStr = dueDateEditText.getText().toString();
+        Date due;
+
+        if (!TextUtils.isEmpty(dueDateStr)) {
+          due = dueDate.getTime();
+        } else {
+          due = new Date(0);
+        }
+
         client.createTodo(summary, description, due);
-        return "Task has been successfully saved";
+        return R.string.edit_success;
       } catch (MalformedURLException e) {
         e.printStackTrace();
-        return "Incorrect API root";        
+        return R.string.edit_apiroot_error;
       } catch (IOException e) {
         e.printStackTrace();
-        return "Error creating task";
+        return R.string.edit_network_error;
+      } catch (IllegalArgumentException e) {
+        e.printStackTrace();
+        return R.string.edit_summary_empty_error;
       }
     }
 
     @Override
-    protected void onPostExecute(String result) {
+    protected void onPostExecute(Integer result) {
       super.onPostExecute(result);
-      Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+      Toast.makeText(getActivity(), getString(result), Toast.LENGTH_SHORT).show();
+
+      if (result == R.string.edit_success) {
+        startActivity(new Intent(getActivity(), ListActivity.class));
+      }
     }
 
   }
@@ -195,7 +211,7 @@ public class EditFragment extends Fragment {
     @Override
     protected String doInBackground(Void... params) {
       Log.d(TAG, "DeleteTask.doInBackground");
-      
+
       // TODO
       return "Task has been successfully deleted";
     }
@@ -204,6 +220,9 @@ public class EditFragment extends Fragment {
     protected void onPostExecute(String result) {
       super.onPostExecute(result);
       Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+
+      if (result.equals("Task has been successfully saved")) { // TODO
+      }
     }
 
   }
