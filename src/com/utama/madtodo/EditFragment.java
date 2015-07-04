@@ -1,10 +1,14 @@
 package com.utama.madtodo;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
+import com.utama.madtodo.model.LocalPersistance;
+import com.utama.madtodo.model.LocalTodo;
+import com.utama.madtodo.model.RemoteTodo;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -24,7 +28,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.webkit.WebView.FindListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -37,16 +40,16 @@ public class EditFragment extends Fragment {
 
   private static final String TAG = "EditFragment";
 
-  private EditText summaryEditText;
+  private EditText nameEditText;
   private EditText descriptionEditText;
-  private EditText dueDateEditText;
-  private EditText dueTimeEditText;
-  private DatePickerDialog dueDatePickerDialog;
-  private TimePickerDialog dueTimePickerDialog;
+  private EditText expiryDateEditText;
+  private EditText expiryTimeEditText;
+  private DatePickerDialog expiryDatePickerDialog;
+  private TimePickerDialog expiryTimePickerDialog;
   private CheckBox isImportantCheckBox;
   private CheckBox isDoneCheckBox;
 
-  private Calendar dueDate = Calendar.getInstance();
+  private Calendar expiry = Calendar.getInstance();
 
 
   @Override
@@ -62,7 +65,7 @@ public class EditFragment extends Fragment {
   @Override
   public void onResume() {
     super.onResume();
-    dueDate = Calendar.getInstance();
+    expiry = Calendar.getInstance();
   }
 
 
@@ -71,26 +74,26 @@ public class EditFragment extends Fragment {
       Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_edit, container);
 
-    summaryEditText = (EditText) view.findViewById(R.id.summaryEditText);
+    nameEditText = (EditText) view.findViewById(R.id.nameEditText);
     descriptionEditText = (EditText) view.findViewById(R.id.descriptionEditText);
-    dueDateEditText = (EditText) view.findViewById(R.id.dueDateEditText);
-    dueTimeEditText = (EditText) view.findViewById(R.id.dueTimeEditText);
+    expiryDateEditText = (EditText) view.findViewById(R.id.expiryDateEditText);
+    expiryTimeEditText = (EditText) view.findViewById(R.id.expiryTimeEditText);
     isImportantCheckBox = (CheckBox) view.findViewById(R.id.isImportantCheckBox);
     isDoneCheckBox = (CheckBox) view.findViewById(R.id.isDoneCheckBox);
 
-    dueDateEditText.setOnClickListener(new OnClickListener() {
+    expiryDateEditText.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Log.d(TAG, "onClick dueDateEditText");
-        dueDatePickerDialog.show();
+        Log.d(TAG, "onClick expiryDateEditText");
+        expiryDatePickerDialog.show();
       }
     });
 
-    dueTimeEditText.setOnClickListener(new OnClickListener() {
+    expiryTimeEditText.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
-        Log.d(TAG, "onClick dueTimeEditText");
-        dueTimePickerDialog.show();
+        Log.d(TAG, "onClick expiryTimeEditText");
+        expiryTimePickerDialog.show();
       }
     });
 
@@ -100,27 +103,26 @@ public class EditFragment extends Fragment {
 
   private void setupDateTimeDialogs() {
     Log.d(TAG, "setDateTimeDialogs");
-
     Calendar now = Calendar.getInstance();
 
-    dueDatePickerDialog = new DatePickerDialog(getActivity(), new OnDateSetListener() {
+    expiryDatePickerDialog = new DatePickerDialog(getActivity(), new OnDateSetListener() {
       @Override
       public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-        dueDate.set(year, monthOfYear, dayOfMonth);
-        String fmt = DateFormat.getDateInstance().format(dueDate.getTime());
-        dueDateEditText.setText(fmt);
+        expiry.set(year, monthOfYear, dayOfMonth);
+        String fmt = DateFormat.getDateInstance(DateFormat.SHORT).format(expiry.getTime());
+        expiryDateEditText.setText(fmt);
       }
     }, now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
 
-    dueTimePickerDialog = new TimePickerDialog(getActivity(), new OnTimeSetListener() {
+    expiryTimePickerDialog = new TimePickerDialog(getActivity(), new OnTimeSetListener() {
       @Override
       public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        int year = dueDate.get(Calendar.YEAR);
-        int monthOfYear = dueDate.get(Calendar.MONTH);
-        int dayOfMonth = dueDate.get(Calendar.DAY_OF_MONTH);
-        dueDate.set(year, monthOfYear, dayOfMonth, hourOfDay, minute);
-        String fmt = DateFormat.getDateInstance().format(dueDate.getTime());
-        dueTimeEditText.setText(fmt);
+        int year = expiry.get(Calendar.YEAR);
+        int monthOfYear = expiry.get(Calendar.MONTH);
+        int dayOfMonth = expiry.get(Calendar.DAY_OF_MONTH);
+        expiry.set(year, monthOfYear, dayOfMonth, hourOfDay, minute);
+        String fmt = DateFormat.getTimeInstance(DateFormat.SHORT).format(expiry.getTime());
+        expiryTimeEditText.setText(fmt);
       }
     }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true);
   }
@@ -159,48 +161,59 @@ public class EditFragment extends Fragment {
 
     @Override
     protected Integer doInBackground(Void... params) {
-      Log.d(TAG, "SaveTask.doInBackground");
-      TodolistWebappClient client;
+      LocalTodo localTodo = null;
+      RemoteTodo remoteTodo = null;
 
       try {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        String apiRoot = pref.getString("apiRoot", "");
+        URL apiRoot = new URL(pref.getString("apiRoot", ""));
+        RemoteTodo.setApiRoot(apiRoot);
         Log.d(TAG, "SaveTask.doInBackground apiRoot: " + apiRoot);
-        client = new TodolistWebappClient(apiRoot);
 
-        String summary = summaryEditText.getText().toString();
-        String description = descriptionEditText.getText().toString();
-        String dueDateStr = dueDateEditText.getText().toString();
-        Date due;
+        LocalTodo.setPersistance(new LocalPersistance(getActivity()));
+        localTodo = new LocalTodo();
+        localTodo.setName(nameEditText.getText().toString());
+        localTodo.setDescription(descriptionEditText.getText().toString());
+        localTodo.setExpiry(buildExpiry(expiryDateEditText.getText().toString()));
+        localTodo.setImportant(isImportantCheckBox.isChecked());
+        localTodo.setMarkedDone(isDoneCheckBox.isChecked());
+        long localRowId = localTodo.save();
 
-        if (!TextUtils.isEmpty(dueDateStr)) {
-          due = dueDate.getTime();
-        } else {
-          due = new Date(0);
+        if (localRowId > 0) {
+          remoteTodo = new RemoteTodo(localTodo);
+          remoteTodo.save();
         }
 
-        client.createTodo(summary, description, due);
         return R.string.edit_success;
       } catch (MalformedURLException e) {
         e.printStackTrace();
         return R.string.edit_apiroot_error;
-      } catch (IOException e) {
-        e.printStackTrace();
-        return R.string.edit_network_error;
       } catch (IllegalArgumentException e) {
         e.printStackTrace();
-        return R.string.edit_summary_empty_error;
+        return R.string.edit_name_empty_error;
       }
     }
+
+
+    private Date buildExpiry(String expiryDateString) {
+      Date exp;
+
+      if (!TextUtils.isEmpty(expiryDateString))
+        exp = expiry.getTime();
+      else
+        exp = new Date(0);
+
+      return exp;
+    }
+
 
     @Override
     protected void onPostExecute(Integer result) {
       super.onPostExecute(result);
       Toast.makeText(getActivity(), getString(result), Toast.LENGTH_SHORT).show();
 
-      if (result == R.string.edit_success) {
+      if (result == R.string.edit_success)
         startActivity(new Intent(getActivity(), ListActivity.class));
-      }
     }
 
   }
@@ -215,6 +228,7 @@ public class EditFragment extends Fragment {
       // TODO
       return "Task has been successfully deleted";
     }
+
 
     @Override
     protected void onPostExecute(String result) {

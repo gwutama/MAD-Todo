@@ -11,7 +11,7 @@
         android:orientation="vertical" >
 
         <EditText
-            android:id="@+id/summaryEditText"
+            android:id="@+id/nameEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content" >
 
             <EditText
-                android:id="@+id/dueDateEditText"
+                android:id="@+id/expiryDateEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -41,7 +41,7 @@
                 android:inputType="date" />
 
             <EditText
-                android:id="@+id/dueTimeEditText"
+                android:id="@+id/expiryTimeEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
