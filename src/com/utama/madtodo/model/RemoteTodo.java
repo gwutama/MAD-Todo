@@ -28,17 +28,17 @@ public class RemoteTodo extends TodoEntity {
   public RemoteTodo() {
     super();
   }
-  
-  
+
+
   public RemoteTodo(TodoEntity todo) {
     super(todo);
   }
-  
-  
-  public RemoteTodo(String jsonStr) {
+
+
+  public RemoteTodo(String json) {
     super();
     try {
-      JSONObject jsonObj = new JSONObject(jsonStr);
+      JSONObject jsonObj = new JSONObject(json);
       setFromJsonObject(jsonObj);
     } catch (JSONException e) {
       id = -1;
@@ -47,18 +47,18 @@ public class RemoteTodo extends TodoEntity {
   }
 
 
-  public RemoteTodo(JSONObject jsonObj) {
+  public RemoteTodo(JSONObject obj) {
     super();
-    setFromJsonObject(jsonObj);
+    setFromJsonObject(obj);
   }
 
 
-  private void setFromJsonObject(JSONObject jsonObj) {
+  private void setFromJsonObject(JSONObject obj) {
     try {
-      id = jsonObj.getLong("id");
-      name = jsonObj.getString("name");
-      description = jsonObj.getString("description");
-      expiry = new Date(jsonObj.getLong("expiry"));
+      id = obj.getLong("id");
+      name = obj.getString("name");
+      description = obj.getString("description");
+      expiry = new Date(obj.getLong("expiry"));
     } catch (JSONException e) {
       id = -1;
       e.printStackTrace();
@@ -76,12 +76,11 @@ public class RemoteTodo extends TodoEntity {
   }
 
 
-  public static List<RemoteTodo> findAll()
-      throws MalformedURLException, IOException, JSONException {
+  public static List<RemoteTodo> findAll() throws JSONException, IOException {
     HttpURLConnection conn = null;
     conn = openConnection("GET", apiRoot);
     String resp = readResponse(conn);
-    List<RemoteTodo> todos = buildEntitiesFromJsonString(resp);
+    List<RemoteTodo> todos = buildEntitiesFromJson(resp);
 
     if (conn != null) {
       conn.disconnect();
@@ -91,8 +90,8 @@ public class RemoteTodo extends TodoEntity {
   }
 
 
-  private static List<RemoteTodo> buildEntitiesFromJsonString(String jsonStr) throws JSONException {
-    JSONArray jsonArr = new JSONArray(jsonStr);
+  private static List<RemoteTodo> buildEntitiesFromJson(String json) throws JSONException {
+    JSONArray jsonArr = new JSONArray(json);
     List<RemoteTodo> ret = new ArrayList<RemoteTodo>();
 
     for (int i = 0; i < jsonArr.length(); i++) {
@@ -105,18 +104,20 @@ public class RemoteTodo extends TodoEntity {
   }
 
 
-  public static RemoteTodo findOne(long id) {
-    // TODO Auto-generated method stub
-    return null;
+  public static RemoteTodo findOne(long id) throws MalformedURLException, IOException {
+    HttpURLConnection conn = null;
+    URL url = new URL(apiRoot + "/" + Long.toString(id));
+    conn = openConnection("GET", url);
+    String resp = readResponse(conn);
+    RemoteTodo todo = new RemoteTodo(resp);
+
+    if (conn != null) {
+      conn.disconnect();
+    }
+
+    return todo;
   }
 
-  
-  // TODO This is just temporary until update() is implemented
-  @Override
-  public long save() {
-    return create();
-  }
-  
 
   @Override
   protected long create() {
@@ -150,8 +151,31 @@ public class RemoteTodo extends TodoEntity {
 
   @Override
   protected long update() {
-    // TODO Auto-generated method stub
-    return 0;
+    if (TextUtils.isEmpty(name)) {
+      throw new IllegalArgumentException("Task name cannot be empty");
+    }
+
+    HttpURLConnection conn = null;
+    String resp;
+
+    try {
+      conn = openConnection("PUT", apiRoot);
+      writeRequestBody(conn, buildRequestPayload().toString());
+      resp = readResponse(conn);
+      setFromJsonObject(new JSONObject(resp));
+    } catch (JSONException e) {
+      e.printStackTrace();
+      return -1;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return -1;
+    }
+
+    if (conn != null) {
+      conn.disconnect();
+    }
+
+    return id;
   }
 
 
@@ -181,6 +205,20 @@ public class RemoteTodo extends TodoEntity {
       return 1;
     else
       return 0;
+  }
+
+
+  public static long purge() throws JSONException, IOException {
+    long deletedRows = 0;
+    
+    List<RemoteTodo> todos = findAll();
+    for (RemoteTodo todo : todos) {
+      if (todo.delete() > 0) {
+        deletedRows++;
+      }
+    }
+
+    return deletedRows;
   }
 
 

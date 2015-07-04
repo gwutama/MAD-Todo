@@ -155,9 +155,8 @@ public class LocalTodo extends TodoEntity {
 
   @Override
   public long delete() {
-    long deletedCount = delete(id);
-    return deletedCount;
-    
+    long count = delete(id);
+    return count;    
   }
   
   
@@ -176,6 +175,20 @@ public class LocalTodo extends TodoEntity {
   }  
 
 
+  public static long purge() {
+    if (persistance == null)
+      throw new SQLiteException("LocalPersistance instance is not set");    
+
+    List<LocalTodo> todos = findAll();
+    long deletedRows = todos.size();
+    
+    SQLiteDatabase db = persistance.getWritableDatabase();
+    persistance.onUpgrade(db, 0, LocalTodoConsts.DB_VERSION);
+    
+    return deletedRows;
+  }
+  
+    
   private ContentValues buildValues() {
     ContentValues values = new ContentValues();
     values.put(LocalTodoConsts.Column.ID, id);
