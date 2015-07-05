@@ -3,6 +3,7 @@ package com.utama.madtodo;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import org.json.JSONException;
 
@@ -12,18 +13,22 @@ import com.utama.madtodo.model.LocalTodo;
 import com.utama.madtodo.model.RemoteTodo;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 import android.widget.Toast;
 
 
-public class ListActivity extends Activity {
+public class TodoListActivity extends Activity {
 
   private static final String TAG = "ListActivity";
 
@@ -31,7 +36,7 @@ public class ListActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_list);
+    setContentView(R.layout.activity_todo_list);
     
     try {
       SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
@@ -43,9 +48,14 @@ public class ListActivity extends Activity {
     }
     
     LocalTodo.setDbHelper(new DbHelper(this));    
+    
+    List<LocalTodo> todos = LocalTodo.findAll();
+    TodoListAdapter adapter = new TodoListAdapter(this, todos);
+    ListView listView = (ListView) findViewById(R.id.todo_list_view);
+    listView.setAdapter(adapter);    
   }
 
-
+  
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.list, menu);
@@ -96,14 +106,14 @@ public class ListActivity extends Activity {
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
-      Toast.makeText(ListActivity.this, R.string.synchronizing, Toast.LENGTH_LONG).show();      
+      Toast.makeText(TodoListActivity.this, R.string.synchronizing, Toast.LENGTH_LONG).show();      
     }
     
     
     @Override
     protected void onPostExecute(Integer result) {
       super.onPostExecute(result);
-      Toast.makeText(ListActivity.this, getString(result), Toast.LENGTH_SHORT).show();      
+      Toast.makeText(TodoListActivity.this, getString(result), Toast.LENGTH_SHORT).show();      
     }
 
   }

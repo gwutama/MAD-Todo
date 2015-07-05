@@ -1,8 +1,6 @@
 package com.utama.madtodo;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,9 +8,8 @@ import java.util.Date;
 import org.json.JSONException;
 
 import com.utama.madtodo.model.DbHelper;
-import com.utama.madtodo.model.LocalTodo;
-import com.utama.madtodo.model.RemoteTodo;
 import com.utama.madtodo.model.LocalRemoteTodo;
+import com.utama.madtodo.model.LocalTodo;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -20,10 +17,8 @@ import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -208,7 +203,7 @@ public class EditFragment extends Fragment {
       Toast.makeText(getActivity(), getString(result), Toast.LENGTH_SHORT).show();
 
       if (result == R.string.edit_success)
-        startActivity(new Intent(getActivity(), ListActivity.class));
+        startActivity(new Intent(getActivity(), TodoListActivity.class));
     }
 
   }
