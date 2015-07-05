@@ -1,6 +1,15 @@
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/todo_list_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:descendantFocusability="blocksDescendants" /> <!--  important! -->    
+    android:layout_height="match_parent" >
+
+    <fragment
+        android:id="@+id/todo_list_items_fragment"
+        android:name="com.utama.madtodo.TodoListFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
+
+</RelativeLayout> <!--  important! -->    
 

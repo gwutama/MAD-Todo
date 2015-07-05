@@ -1,58 +1,30 @@
 package com.utama.madtodo;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
 
 import org.json.JSONException;
 
-import com.utama.madtodo.model.DbHelper;
 import com.utama.madtodo.model.LocalRemoteTodo;
-import com.utama.madtodo.model.LocalTodo;
-import com.utama.madtodo.model.RemoteTodo;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 
 public class TodoListActivity extends Activity {
 
-  private static final String TAG = "ListActivity";
+  private static final String TAG = "TodoListActivity";
 
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_todo_list);
-    
-    try {
-      SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-      URL apiRoot = new URL(pref.getString("apiRoot", ""));
-      RemoteTodo.setApiRoot(apiRoot);
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-      Toast.makeText(this, R.string.api_root_error, Toast.LENGTH_SHORT).show();
-    }
-    
-    LocalTodo.setDbHelper(new DbHelper(this));    
-    
-    List<LocalTodo> todos = LocalTodo.findAll();
-    TodoListAdapter adapter = new TodoListAdapter(this, todos);
-    ListView listView = (ListView) findViewById(R.id.todo_list_view);
-    listView.setAdapter(adapter);    
+    setContentView(R.layout.activity_todo_list);    
   }
 
   
