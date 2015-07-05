@@ -9,7 +9,6 @@ import org.json.JSONException;
 
 import com.utama.madtodo.model.DbHelper;
 import com.utama.madtodo.model.LocalRemoteTodo;
-import com.utama.madtodo.model.LocalTodo;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;

@@ -8,9 +8,13 @@ import com.utama.madtodo.model.DbHelper;
 import com.utama.madtodo.model.LocalTodo;
 
 import android.app.Fragment;
-import android.os.AsyncTask;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -18,6 +22,8 @@ import android.widget.TextView;
 
 public class DetailsFragment extends Fragment {
 
+  private static final String TAG = "DetailsFragment";
+  
   private TextView nameTextView;
   private TextView descriptionTextView;
   private TextView expiryTextView;
@@ -28,6 +34,7 @@ public class DetailsFragment extends Fragment {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setHasOptionsMenu(true);
     DbHelper.setupPersistance(getActivity());
   }
 
@@ -52,6 +59,27 @@ public class DetailsFragment extends Fragment {
     isDoneTextView = (TextView) view.findViewById(R.id.isDoneTextView);
 
     return view;
+  }
+  
+  
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    super.onCreateOptionsMenu(menu, inflater);
+    inflater.inflate(R.menu.details, menu);
+  }
+  
+  
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    int id = item.getItemId();
+
+    if (id == R.id.action_settings) {
+      Log.d(TAG, "onOptionsItemSelected: action_settings");
+      startActivity(new Intent(getActivity(), SettingsActivity.class));
+      return true;
+    }
+    
+    return super.onOptionsItemSelected(item);
   }
 
 
