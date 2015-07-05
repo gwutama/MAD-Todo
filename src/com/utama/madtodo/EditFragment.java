@@ -1,14 +1,18 @@
 package com.utama.madtodo;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import com.utama.madtodo.model.LocalPersistance;
+import org.json.JSONException;
+
+import com.utama.madtodo.model.DbHelper;
 import com.utama.madtodo.model.LocalTodo;
 import com.utama.madtodo.model.RemoteTodo;
+import com.utama.madtodo.model.LocalRemoteTodo;
 
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
@@ -59,6 +63,8 @@ public class EditFragment extends Fragment {
 
     setHasOptionsMenu(true);
     setupDateTimeDialogs();
+    
+    LocalTodo.setDbHelper(new DbHelper(getActivity()));
   }
 
 
@@ -161,49 +167,38 @@ public class EditFragment extends Fragment {
 
     @Override
     protected Integer doInBackground(Void... params) {
-      LocalTodo localTodo = null;
-      RemoteTodo remoteTodo = null;
-
+      Log.d(TAG, "SaveAsync.doInBackground");
+      
       try {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        URL apiRoot = new URL(pref.getString("apiRoot", ""));
-        RemoteTodo.setApiRoot(apiRoot);
-        Log.d(TAG, "SaveTask.doInBackground apiRoot: " + apiRoot);
+        LocalRemoteTodo todo = new LocalRemoteTodo();
+        todo.setName(nameEditText.getText().toString());
+        todo.setDescription(descriptionEditText.getText().toString());
+        todo.setExpiry(buildExpiry(expiryDateEditText.getText().toString()));
+        todo.setImportant(isImportantCheckBox.isChecked());
+        todo.setMarkedDone(isDoneCheckBox.isChecked());
 
-        LocalTodo.setPersistance(new LocalPersistance(getActivity()));
-        localTodo = new LocalTodo();
-        localTodo.setName(nameEditText.getText().toString());
-        localTodo.setDescription(descriptionEditText.getText().toString());
-        localTodo.setExpiry(buildExpiry(expiryDateEditText.getText().toString()));
-        localTodo.setImportant(isImportantCheckBox.isChecked());
-        localTodo.setMarkedDone(isDoneCheckBox.isChecked());
-        long localRowId = localTodo.save();
-
-        if (localRowId > 0) {
-          remoteTodo = new RemoteTodo(localTodo);
-          remoteTodo.save();
-        }
-
-        return R.string.edit_success;
-      } catch (MalformedURLException e) {
-        e.printStackTrace();
-        return R.string.edit_apiroot_error;
+        if (todo.save() > 0)
+          return R.string.edit_success;          
+        else
+          return R.string.edit_general_error;
       } catch (IllegalArgumentException e) {
         e.printStackTrace();
         return R.string.edit_name_empty_error;
-      }
+      } catch (IOException e) {
+        e.printStackTrace();
+        return R.string.network_error;
+      } catch (JSONException e) {
+        e.printStackTrace();
+        return R.string.response_error;
+      }        
     }
 
 
     private Date buildExpiry(String expiryDateString) {
-      Date exp;
-
       if (!TextUtils.isEmpty(expiryDateString))
-        exp = expiry.getTime();
+        return expiry.getTime();
       else
-        exp = new Date(0);
-
-      return exp;
+        return new Date(0);
     }
 
 

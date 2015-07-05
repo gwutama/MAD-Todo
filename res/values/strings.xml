@@ -6,10 +6,8 @@
     <string name="edit_save">Save</string>
     <string name="edit_delete">Delete</string>
     <string name="edit_success">Task has been successfully saved</string>
-    <string name="edit_apiroot_error">Incorrect API root</string>
-    <string name="edit_network_error">Network error</string>
+    <string name="edit_general_error">Error saving task</string>    
     <string name="edit_name_empty_error">Task name cannot be empty</string>
-    <string name="edit_response_error">Response error</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_create">New Task</string>
     <string name="hello_world">Hello world!</string>
@@ -22,4 +20,10 @@
 	<string name="password_summary">Password to log into web service</string>    	
 	<string name="api_root">API Root</string>
 	<string name="api_root_summary">API root of the web service</string>	
+    <string name="api_root_error">Invalid API root</string>	
+    <string name="network_error">Network error</string>
+    <string name="response_error">Response error</string>
+    <string name="synchronizing">Synchronizing tasks with remote server</string>    
+    <string name="synchronization_success">Tasks are successfully synchronized with remote server</string>        
+    
 </resources>

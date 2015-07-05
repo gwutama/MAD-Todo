@@ -1,12 +1,16 @@
 package com.utama.madtodo.model;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Locale;
+
+import org.json.JSONException;
 
 
 abstract public class TodoEntity {
 
   protected long id;
+  protected long remoteId;
   protected String name;
   protected String description;
   protected Date expiry;
@@ -16,17 +20,26 @@ abstract public class TodoEntity {
 
   public TodoEntity() {
     id = -1;
+    remoteId = -1;
     expiry = new Date(0);
+  }
+
+
+  public TodoEntity(TodoEntity todo) {
+    this();
+    setTodo(todo);
   }
   
   
-  public TodoEntity(TodoEntity todo) {
+  public void setTodo(TodoEntity todo) {
     id = todo.getId();
+    remoteId = todo.getRemoteId();
     name = todo.getName();
+    remoteId = todo.getRemoteId();
     description = todo.getDescription();
     expiry = todo.getExpiry();
     isImportant = todo.isImportant();
-    isMarkedDone = todo.isMarkedDone();
+    isMarkedDone = todo.isMarkedDone();    
   }
 
 
@@ -37,6 +50,16 @@ abstract public class TodoEntity {
 
   public void setId(long id) {
     this.id = id;
+  }
+
+
+  public long getRemoteId() {
+    return remoteId;
+  }
+
+
+  public void setRemoteId(long remoteId) {
+    this.remoteId = remoteId;
   }
 
 
@@ -88,25 +111,33 @@ abstract public class TodoEntity {
   public void setMarkedDone(Boolean isMarkedDone) {
     this.isMarkedDone = isMarkedDone;
   }
-  
-  
-  abstract protected long create();  
-  abstract protected long update();
-  abstract public long delete();
-  
-  
-  public long save() {
+
+
+  abstract protected long create() throws IOException, JSONException;
+
+  abstract protected long update() throws IOException, JSONException;
+
+  abstract public long delete() throws IOException, JSONException;
+
+
+  public long save() throws IOException, JSONException {
     if (id == -1)
       return create();
     else
       return update();
   }
-  
+
 
   public String toString() {
     return String.format(Locale.US,
-        "id: %d\nname: %s\ndescription: %s\nexpiry: %s\nisImportant: %b\nisMarkedDone: %b", id,
-        name, description, expiry.toString(), isImportant, isMarkedDone);
+        "id: %d\n"
+        + "remote id: %d\n"
+        + "name: %s\n"
+        + "description: %s\n"
+        + "expiry: %s\n"
+        + "isImportant: %b\n"
+        + "isMarkedDone: %b\n",
+        id, remoteId, name, description, expiry.toString(), isImportant, isMarkedDone);
   }
 
 }

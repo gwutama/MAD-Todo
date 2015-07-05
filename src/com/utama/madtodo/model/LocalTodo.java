@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,27 +16,32 @@ import android.util.Log;
 public class LocalTodo extends TodoEntity {
 
   private static final String TAG = "LocalTodo";
-  private static LocalPersistance persistance = null;
+  private static DbHelper dbHelper = null;
 
-  
+
   public LocalTodo() {
     super();
   }
-  
-  
+
+
   public LocalTodo(Cursor cursor) {
     super();
     setFromCursor(cursor);
   }
 
-  
-  public static LocalPersistance getPersistance() {
-    return persistance;
+
+  public LocalTodo(TodoEntity todo) {
+    super(todo);
   }
 
 
-  public static void setPersistance(LocalPersistance persistance) {
-    LocalTodo.persistance = persistance;
+  public static DbHelper getDbHelper() {
+    return dbHelper;
+  }
+
+
+  public static void setDbHelper(DbHelper persistance) {
+    LocalTodo.dbHelper = persistance;
   }
 
 
@@ -50,84 +54,89 @@ public class LocalTodo extends TodoEntity {
     LocalTodo todo = new LocalTodo(cursor);
     return todo;
   }
-  
-  
-  private static Cursor queryOne(long id) {
+
+
+  private static Cursor queryOne(long id) throws SQLiteException {
     Log.d(TAG, "queryOne");
 
-    if (persistance == null)
-      throw new SQLiteException("LocalPersistance instance is not set");
-      
+    if (dbHelper == null)
+      throw new SQLiteException("DbHelper instance is not set");
+
     SQLiteQueryBuilder query = new SQLiteQueryBuilder();
-    query.setTables(LocalTodoConsts.TABLE);
-    String whereClause = LocalTodoConsts.Column.ID + "=" + id;
+    query.setTables(DbConsts.TABLE);
+    String whereClause = DbConsts.Column.ID + "=" + id;
     query.appendWhere(whereClause);
 
-    SQLiteDatabase db = persistance.getReadableDatabase();
+    SQLiteDatabase db = dbHelper.getReadableDatabase();
     Cursor cursor = query.query(db, null, null, null, null, null, null);
     Log.d(TAG, "Queried records: " + cursor.getCount());
 
     return cursor;
-  }  
+  }
 
 
   public static List<LocalTodo> findAll() {
-    Cursor cursor = queryAll(null);
+    return findAll(null);
+  }
+  
+  
+  public static List<LocalTodo> findAll(String sortOrder) {
+    Cursor cursor = queryAll(sortOrder);
     List<LocalTodo> ret = new ArrayList<LocalTodo>();
-    
+
     while (cursor.moveToNext()) {
       LocalTodo todo = new LocalTodo(cursor);
       ret.add(todo);
     }
-    
+
     return ret;
   }
 
-  
-  private static Cursor queryAll(String sortOrder) {
+
+  private static Cursor queryAll(String sortOrder) throws SQLiteException {
     Log.d(TAG, "queryMany");
 
-    if (persistance == null)
-      throw new SQLiteException("LocalPersistance instance is not set");
-    
+    if (dbHelper == null)
+      throw new SQLiteException("DbHelper instance is not set");
+
     SQLiteQueryBuilder query = new SQLiteQueryBuilder();
-    query.setTables(LocalTodoConsts.TABLE);
+    query.setTables(DbConsts.TABLE);
 
-    if (TextUtils.isEmpty(sortOrder))
-      sortOrder = LocalTodoConsts.DEFAULT_SORT;
+    if (TextUtils.isEmpty(sortOrder) || sortOrder == null)
+      sortOrder = DbConsts.DEFAULT_SORT;
 
-    SQLiteDatabase db = persistance.getReadableDatabase();
+    SQLiteDatabase db = dbHelper.getReadableDatabase();
     Cursor cursor = query.query(db, null, null, null, null, null, sortOrder);
     Log.d(TAG, "Queried records: " + cursor.getCount());
 
     return cursor;
   }
-  
+
 
   @Override
   protected long create() {
     ContentValues values = buildValues();
-    values.remove(LocalTodoConsts.Column.ID); // because of AUTO INCREMENT property of _id field.
+    values.remove(DbConsts.Column.ID); // because of AUTO INCREMENT property of _id field.
     long rowId = create(values);
-    id = rowId; 
+    id = rowId;
     return rowId;
   }
 
-  
-  private long create(ContentValues values) {
-    Log.d(TAG, "insert");
-    
-    if (persistance == null)
-      throw new SQLiteException("LocalPersistance instance is not set");    
 
-    SQLiteDatabase db = persistance.getWritableDatabase();
-    long rowId = db.insertWithOnConflict(LocalTodoConsts.TABLE, null, values,
-        SQLiteDatabase.CONFLICT_IGNORE);
+  private long create(ContentValues values) throws SQLiteException {
+    Log.d(TAG, "insert");
+
+    if (dbHelper == null)
+      throw new SQLiteException("DbHelper instance is not set");
+
+    SQLiteDatabase db = dbHelper.getWritableDatabase();
+    long rowId =
+        db.insertWithOnConflict(DbConsts.TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
     Log.d(TAG, "Inserted record id: " + rowId);
 
     return rowId;
   }
-  
+
 
   @Override
   protected long update() {
@@ -136,78 +145,80 @@ public class LocalTodo extends TodoEntity {
     id = rowId;
     return rowId;
   }
-  
-  
-  private int update(long id, ContentValues values) {
+
+
+  private int update(long id, ContentValues values) throws SQLiteException {
     Log.d(TAG, "update");
 
-    if (persistance == null)
-      throw new SQLiteException("LocalPersistance instance is not set");    
-    
-    String whereClause = LocalTodoConsts.Column.ID + "=" + id;
-    SQLiteDatabase db = persistance.getWritableDatabase();
-    int ret = db.update(LocalTodoConsts.TABLE, values, whereClause, null);
+    if (dbHelper == null)
+      throw new SQLiteException("DbHelper instance is not set");
+
+    String whereClause = DbConsts.Column.ID + "=" + id;
+    SQLiteDatabase db = dbHelper.getWritableDatabase();
+    int ret = db.update(DbConsts.TABLE, values, whereClause, null);
     Log.d(TAG, "Updated records: " + ret);
 
     return ret;
-  }  
+  }
 
 
   @Override
   public long delete() {
     long count = delete(id);
-    return count;    
+    return count;
   }
-  
-  
-  private long delete(long id) {
-    Log.d(TAG, "delete");
-    
-    if (persistance == null)
-      throw new SQLiteException("LocalPersistance instance is not set");    
 
-    String whereClause = LocalTodoConsts.Column.ID + "=" + id;
-    SQLiteDatabase db = persistance.getWritableDatabase();
-    long ret = db.delete(LocalTodoConsts.TABLE, whereClause, null);
+
+  private long delete(long id) throws SQLiteException {
+    Log.d(TAG, "delete");
+
+    if (dbHelper == null)
+      throw new SQLiteException("DbHelper instance is not set");
+
+    String whereClause = DbConsts.Column.ID + "=" + id;
+    SQLiteDatabase db = dbHelper.getWritableDatabase();
+    long ret = db.delete(DbConsts.TABLE, whereClause, null);
     Log.d(TAG, "Deleted records: " + ret);
 
     return ret;
-  }  
+  }
 
 
-  public static long purge() {
-    if (persistance == null)
-      throw new SQLiteException("LocalPersistance instance is not set");    
+  public static long purge() throws SQLiteException {
+    if (dbHelper == null)
+      throw new SQLiteException("DbHelper instance is not set");
 
     List<LocalTodo> todos = findAll();
     long deletedRows = todos.size();
-    
-    SQLiteDatabase db = persistance.getWritableDatabase();
-    persistance.onUpgrade(db, 0, LocalTodoConsts.DB_VERSION);
-    
+
+    SQLiteDatabase db = dbHelper.getWritableDatabase();
+    dbHelper.onUpgrade(db, 0, DbConsts.DB_VERSION);
+
     return deletedRows;
   }
-  
-    
+
+
   private ContentValues buildValues() {
     ContentValues values = new ContentValues();
-    values.put(LocalTodoConsts.Column.ID, id);
-    values.put(LocalTodoConsts.Column.NAME, name);    
-    values.put(LocalTodoConsts.Column.DESCRIPTION, description);
-    values.put(LocalTodoConsts.Column.EXPIRY, expiry.getTime());
-    values.put(LocalTodoConsts.Column.IS_IMPORTANT, isImportant);
-    values.put(LocalTodoConsts.Column.IS_MARKED_DONE, isMarkedDone);
+    values.put(DbConsts.Column.ID, id);
+    values.put(DbConsts.Column.REMOTE_ID, remoteId);
+    values.put(DbConsts.Column.NAME, name);
+    values.put(DbConsts.Column.DESCRIPTION, description);
+    values.put(DbConsts.Column.EXPIRY, expiry.getTime());
+    values.put(DbConsts.Column.IS_IMPORTANT, isImportant);
+    values.put(DbConsts.Column.IS_MARKED_DONE, isMarkedDone);
     return values;
   }
-  
-  
+
+
   public void setFromCursor(Cursor cur) {
-    id = cur.getLong(cur.getColumnIndex(LocalTodoConsts.Column.ID));
-    name = cur.getString(cur.getColumnIndex(LocalTodoConsts.Column.NAME));
-    description = cur.getString(cur.getColumnIndex(LocalTodoConsts.Column.DESCRIPTION));
-    expiry = new Date(cur.getLong(cur.getColumnIndex(LocalTodoConsts.Column.EXPIRY)));
-    isImportant = cur.getInt(cur.getColumnIndex(LocalTodoConsts.Column.IS_IMPORTANT)) != 0;
-    isMarkedDone = cur.getInt(cur.getColumnIndex(LocalTodoConsts.Column.IS_MARKED_DONE)) != 0;
+    id = cur.getLong(cur.getColumnIndex(DbConsts.Column.ID));
+    remoteId = cur.getLong(cur.getColumnIndex(DbConsts.Column.REMOTE_ID));
+    name = cur.getString(cur.getColumnIndex(DbConsts.Column.NAME));
+    description = cur.getString(cur.getColumnIndex(DbConsts.Column.DESCRIPTION));
+    expiry = new Date(cur.getLong(cur.getColumnIndex(DbConsts.Column.EXPIRY)));
+    isImportant = cur.getInt(cur.getColumnIndex(DbConsts.Column.IS_IMPORTANT)) != 0;
+    isMarkedDone = cur.getInt(cur.getColumnIndex(DbConsts.Column.IS_MARKED_DONE)) != 0;
   }
 
 

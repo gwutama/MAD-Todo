@@ -1,9 +1,6 @@
 package com.utama.madtodo.model;
 
-import android.provider.BaseColumns;
-
-
-public class LocalTodoConsts {
+public class DbConsts {
 
   // DB specific constants
   public static final String DB_NAME = "madtodo.db";
@@ -14,7 +11,8 @@ public class LocalTodoConsts {
   
   // DB columns constants
   public class Column {
-    public static final String ID = BaseColumns._ID;
+    public static final String ID = "id";
+    public static final String REMOTE_ID = "remote_id";    
     public static final String NAME = "name";
     public static final String DESCRIPTION = "description";
     public static final String EXPIRY = "expiry";
