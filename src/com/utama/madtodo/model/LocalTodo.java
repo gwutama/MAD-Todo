@@ -51,6 +51,7 @@ public class LocalTodo extends TodoEntity {
     if (cursor.getCount() == 0)
       return null;
 
+    cursor.moveToFirst();
     LocalTodo todo = new LocalTodo(cursor);
     return todo;
   }
@@ -217,8 +218,8 @@ public class LocalTodo extends TodoEntity {
     name = cur.getString(cur.getColumnIndex(DbConsts.Column.NAME));
     description = cur.getString(cur.getColumnIndex(DbConsts.Column.DESCRIPTION));
     expiry = new Date(cur.getLong(cur.getColumnIndex(DbConsts.Column.EXPIRY)));
-    isImportant = cur.getInt(cur.getColumnIndex(DbConsts.Column.IS_IMPORTANT)) != 0;
-    isMarkedDone = cur.getInt(cur.getColumnIndex(DbConsts.Column.IS_MARKED_DONE)) != 0;
+    isImportant = cur.getInt(cur.getColumnIndex(DbConsts.Column.IS_IMPORTANT)) == 1;
+    isMarkedDone = cur.getInt(cur.getColumnIndex(DbConsts.Column.IS_MARKED_DONE)) == 1;
   }
 
 

@@ -6,7 +6,7 @@
     <string name="edit_save">Save</string>
     <string name="edit_delete">Delete</string>
     <string name="edit_success">Task has been successfully saved</string>
-    <string name="edit_general_error">Error saving task</string>    
+    <string name="edit_general_error">Error saving task</string>
     <string name="edit_name_empty_error">Task name cannot be empty</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_create">New Task</string>
@@ -14,16 +14,23 @@
     <string name="list_create">New</string>
     <string name="list_sync">Sync</string>
     <string name="title_activity_settings">SettingsActivity</string>
-	<string name="username">Username</string>
-	<string name="username_summary">Username to log into web service</string>	
-	<string name="password">Password</string>    
-	<string name="password_summary">Password to log into web service</string>    	
-	<string name="api_root">API Root</string>
-	<string name="api_root_summary">API root of the web service</string>	
-    <string name="api_root_error">Invalid API root</string>	
+    <string name="username">Username</string>
+    <string name="username_summary">Username to log into web service</string>
+    <string name="password">Password</string>
+    <string name="password_summary">Password to log into web service</string>
+    <string name="api_root">API Root</string>
+    <string name="api_root_summary">API root of the web service</string>
+    <string name="api_root_error">Invalid API root</string>
     <string name="network_error">Network error</string>
     <string name="response_error">Response error</string>
-    <string name="synchronizing">Synchronizing tasks with remote server</string>    
-    <string name="synchronization_success">Tasks are successfully synchronized with remote server</string>        
+    <string name="synchronizing">Synchronizing tasks with remote server</string>
+    <string name="synchronization_success">Tasks are successfully synchronized with remote server</string>
+    <string name="title_activity_details">DetailsActivity</string>
+    <string name="task_due_text" formatted="false">Due %s at %s</string>
+    <string name="task_no_due_text" formatted="false">Open task</string>    
+    <string name="task_important_text">Task is important</string>
+    <string name="task_not_important_text">Task has normal priority</string>    
+    <string name="task_done_text">Task was marked as done</string>
+    <string name="task_not_done_text">Task is still open</string>    
     
 </resources>

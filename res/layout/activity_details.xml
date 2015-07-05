@@ -2,12 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.utama.madtodo.CreateActivity" >
+    tools:context="com.utama.madtodo.DetailsActivity" >
 
     <fragment
-        android:id="@+id/editFragment"
-        android:name="com.utama.madtodo.EditFragment"
+        android:id="@+id/detailsFragment"
+        android:name="com.utama.madtodo.DetailsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
 </FrameLayout>
+

@@ -59,7 +59,7 @@ public class EditFragment extends Fragment {
     setHasOptionsMenu(true);
     setupDateTimeDialogs();
     
-    LocalTodo.setDbHelper(new DbHelper(getActivity()));
+    DbHelper.setupPersistance(getActivity());
   }
 
 
