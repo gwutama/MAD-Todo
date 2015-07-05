@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.json.JSONException;
 
+import com.utama.madtodo.model.DbHelper;
 import com.utama.madtodo.model.LocalRemoteTodo;
 
 import android.app.Activity;
@@ -25,6 +26,7 @@ public class TodoListActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_todo_list);    
+    DbHelper.setupPersistance(this);
   }
 
   
@@ -33,8 +35,8 @@ public class TodoListActivity extends Activity {
     getMenuInflater().inflate(R.menu.list, menu);
     return true;
   }
-
-
+  
+  
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     int id = item.getItemId();

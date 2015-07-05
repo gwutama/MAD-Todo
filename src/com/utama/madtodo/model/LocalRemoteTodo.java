@@ -1,6 +1,7 @@
 package com.utama.madtodo.model;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
@@ -15,6 +16,26 @@ public class LocalRemoteTodo extends TodoEntity {
 
   public LocalRemoteTodo(TodoEntity todo) {
     super(todo);
+  }
+
+
+  public static LocalRemoteTodo findOne(long id) {
+    LocalTodo local = LocalTodo.findOne(id);
+    LocalRemoteTodo ret = new LocalRemoteTodo(local);
+    return ret;
+  }
+
+
+  public static List<LocalRemoteTodo> findAll(String sortOrder) {
+    List<LocalTodo> locals = LocalTodo.findAll(sortOrder);
+    List<LocalRemoteTodo> ret = new ArrayList<LocalRemoteTodo>();
+
+    for (LocalTodo local : locals) {
+      LocalRemoteTodo todo = new LocalRemoteTodo(local);
+      ret.add(todo);
+    }
+    
+    return ret;
   }
 
 
@@ -64,7 +85,7 @@ public class LocalRemoteTodo extends TodoEntity {
     return localCount;
   }
 
-
+  
   public static void sync() throws IOException, JSONException {
     String sortOrder = DbConsts.Column.ID + " ASC";
     List<LocalTodo> locals = LocalTodo.findAll(sortOrder);
