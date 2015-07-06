@@ -1,4 +1,4 @@
-package com.utama.madtodo.model;
+package com.utama.madtodo.models;
 
 import java.io.IOException;
 import java.util.ArrayList;

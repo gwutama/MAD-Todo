@@ -2,9 +2,9 @@ package com.utama.madtodo;
 
 import java.util.List;
 
-import com.utama.madtodo.model.DbConsts;
-import com.utama.madtodo.model.DbHelper;
-import com.utama.madtodo.model.LocalTodo;
+import com.utama.madtodo.models.DbConsts;
+import com.utama.madtodo.models.DbHelper;
+import com.utama.madtodo.models.LocalTodo;
 
 import android.app.ListFragment;
 import android.content.Intent;

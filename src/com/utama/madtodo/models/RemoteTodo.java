@@ -1,4 +1,4 @@
-package com.utama.madtodo.model;
+package com.utama.madtodo.models;
 
 import java.io.BufferedReader;
 import java.io.IOException;

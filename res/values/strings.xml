@@ -34,6 +34,7 @@
     <string name="task_done_text">Task was marked as done</string>
     <string name="task_not_done_text">Task is still open</string>    
     <string name="details_edit">Edit</string>        
+    <string name="delete_confirm">Delete this task?</string>
     <string name="delete_success">Task has been successfully deleted</string>
     <string name="delete_general_error">Error deleting task</string>    
     <string name="yes">Yes</string>

@@ -2,7 +2,7 @@ package com.utama.madtodo;
 
 import java.util.List;
 
-import com.utama.madtodo.model.LocalTodo;
+import com.utama.madtodo.models.LocalTodo;
 
 import android.content.Context;
 import android.view.LayoutInflater;

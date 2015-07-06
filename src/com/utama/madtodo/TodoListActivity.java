@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.json.JSONException;
 
-import com.utama.madtodo.model.DbHelper;
-import com.utama.madtodo.model.LocalRemoteTodo;
+import com.utama.madtodo.models.DbHelper;
+import com.utama.madtodo.models.LocalRemoteTodo;
 
 import android.app.Activity;
 import android.content.Intent;
