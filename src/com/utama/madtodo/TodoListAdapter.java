@@ -24,6 +24,11 @@ import android.widget.ToggleButton;
 // http://www.vogella.com/tutorials/AndroidListView/article.html
 public class TodoListAdapter extends ArrayAdapter<LocalTodo> {
 
+  private static final int BACKGROUND_RED = 0xFFFFE7E6;
+  private static final int BACKGROUND_GREEN = 0xFFF2FFE6;
+  private static final int BACKGROUND_DEFAULT = android.R.drawable.btn_default;
+  
+  
   public TodoListAdapter(Context context, List<LocalTodo> todos) {
     super(context, 0, todos);
   }
@@ -32,13 +37,27 @@ public class TodoListAdapter extends ArrayAdapter<LocalTodo> {
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
     final LocalTodo todo = getItem(position);
-
+    
     if (convertView == null) {
       LayoutInflater inflater = LayoutInflater.from(getContext());
       convertView = inflater.inflate(R.layout.todo_list_item, parent, false);
     }
     
-
+    // Red background color for tasks due but not for tasks without expiration dates.
+    // Green background color for tasks that are done.
+    Date now = new Date();
+    boolean isPastDue = todo.getExpiry().compareTo(now) < 0;
+    boolean isExpireNotSet = todo.getExpiry().getTime() == 0;
+    
+    if (isPastDue && !isExpireNotSet && !todo.isMarkedDone()) {
+      convertView.setBackgroundColor(BACKGROUND_RED);      
+    } else if (todo.isMarkedDone()) {
+      convertView.setBackgroundColor(BACKGROUND_GREEN);
+    } else {
+      convertView.setBackgroundColor(BACKGROUND_DEFAULT);
+    }
+    
+    
     // Task name
     TextView nameTextView = (TextView) convertView.findViewById(R.id.listItemNameTextView);
     nameTextView.setText(todo.getName());
