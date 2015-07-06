@@ -39,8 +39,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/listItemExpiryTextView"
-        android:layout_toLeftOf="@+id/listItemCheckToggle"
-        android:layout_toStartOf="@+id/listItemCheckToggle"
+        android:layout_toLeftOf="@+id/listItemMarkedDoneToggle"
+        android:layout_toStartOf="@+id/listItemMarkedDoneToggle"
         android:background="@drawable/ic_toggle_important"
         android:focusable="false"
         android:focusableInTouchMode="false"
@@ -52,7 +52,7 @@
         android:textOff="" />
 
     <ToggleButton
-        android:id="@+id/listItemCheckToggle"
+        android:id="@+id/listItemMarkedDoneToggle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/listItemImportantToggle"
