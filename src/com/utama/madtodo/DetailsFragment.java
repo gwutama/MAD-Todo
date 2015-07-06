@@ -20,14 +20,14 @@ public class DetailsFragment extends SingleTodoFragment
   private TextView isImportantTextView;
   private TextView isDoneTextView;
 
-  
+
   @Override
   protected View inflateFragment(LayoutInflater inflater, ViewGroup container) {
     View view = inflater.inflate(R.layout.fragment_details, container);
-    return view;    
+    return view;
   }
-  
-  
+
+
   @Override
   protected void setupView(View view) {
     nameTextView = (TextView) view.findViewById(R.id.nameTextView);
@@ -51,6 +51,7 @@ public class DetailsFragment extends SingleTodoFragment
 
         Date expiry = todo.getExpiry();
 
+        // Format text for due date
         if (expiry.getTime() > 0) {
           String expDate = DateFormat.getDateInstance().format(expiry);
           String expTime = DateFormat.getTimeInstance().format(expiry);
