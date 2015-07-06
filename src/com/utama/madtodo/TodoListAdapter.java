@@ -31,7 +31,6 @@ public class TodoListAdapter extends ArrayAdapter<LocalTodo> {
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    Log.d("TodoListAdapter", "Pos " + position);
     final LocalTodo todo = getItem(position);
 
     if (convertView == null) {

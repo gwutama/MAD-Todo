@@ -19,6 +19,12 @@ public class TodoListFragment extends ListFragment {
   private static final String TAG = "TodoListFragment";
   TodoListAdapter adapter;
   List<LocalTodo> todos;
+  private String sortOrder = DbConsts.DEFAULT_SORT;
+
+  
+  public void setSortOrder(String sortOrder) {
+    this.sortOrder = sortOrder;
+  }
 
 
   @Override
@@ -26,7 +32,7 @@ public class TodoListFragment extends ListFragment {
     Log.d(TAG, "onActivityCreated");
     super.onActivityCreated(savedInstanceState);
     DbHelper.setupPersistance(getActivity());
-    todos = LocalTodo.findAll();
+    todos = LocalTodo.findAll(sortOrder);
     adapter = new TodoListAdapter(getActivity(), todos);
     setListAdapter(adapter);
   }
@@ -34,7 +40,7 @@ public class TodoListFragment extends ListFragment {
   
   public void forceRefreshList() {
     Log.d(TAG, "refreshList");
-    todos = LocalTodo.findAll();
+    todos = LocalTodo.findAll(sortOrder);
     adapter.clear();
     adapter.addAll(todos);
     adapter.notifyDataSetChanged();

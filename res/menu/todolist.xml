@@ -1,0 +1,37 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_settings"/>
+    <item
+        android:id="@+id/action_create"
+        android:icon="@android:drawable/ic_menu_add"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/list_create"/>
+    <item
+        android:id="@+id/action_sync"
+        android:icon="@android:drawable/ic_menu_rotate"
+        android:showAsAction="ifRoom|withText"
+        android:title="@string/list_sync"/>
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:showAsAction="ifRoom|withText"
+        android:title="Sort">
+        <menu>
+            <group android:checkableBehavior="single">
+	            <item
+	                android:id="@+id/action_sort_date_importance"
+	                android:title="Date + Importance" android:checked="true">
+	            </item>
+	            <item
+	                android:id="@+id/action_sort_importance_date"
+	                android:title="Importance + Date">
+	            </item>                
+            </group>
+        </menu>
+    </item>
+
+</menu>
