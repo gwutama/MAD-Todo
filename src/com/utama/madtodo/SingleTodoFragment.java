@@ -82,7 +82,7 @@ public abstract class SingleTodoFragment extends Fragment implements OnClickList
     if (dialog instanceof AlertDialog) {
       switch (which) {
         case DialogInterface.BUTTON_POSITIVE:
-          new DeleteAsync(this).execute(activeTodoId);
+          new DeleteAsync(this.getActivity()).execute(activeTodoId);
           break;
         case DialogInterface.BUTTON_NEGATIVE:
           dialog.cancel();
@@ -118,7 +118,7 @@ public abstract class SingleTodoFragment extends Fragment implements OnClickList
       case R.id.action_save:
         LocalRemoteTodo todo = buildTodo();
         if (todo != null) {
-          new SaveAsync(this).execute(todo);
+          new SaveAsync(this.getActivity()).execute(todo);
           return true;
         }
         return false;

@@ -6,7 +6,7 @@ import com.utama.madtodo.R;
 import com.utama.madtodo.TodoListActivity;
 import com.utama.madtodo.models.LocalRemoteTodo;
 
-import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -16,12 +16,12 @@ import android.widget.Toast;
 public final class DeleteAsync extends AsyncTask<Long, Void, Integer> {
 
   private static final String TAG = "DeleteTask";
-  private Fragment fragment;
+  private Context context;
 
 
-  public DeleteAsync(Fragment fragment) {
+  public DeleteAsync(Context context) {
     super();
-    this.fragment = fragment;
+    this.context = context;
   }
 
 
@@ -47,10 +47,10 @@ public final class DeleteAsync extends AsyncTask<Long, Void, Integer> {
   @Override
   protected void onPostExecute(Integer result) {
     super.onPostExecute(result);
-    Toast.makeText(fragment.getActivity(), fragment.getString(result), Toast.LENGTH_SHORT).show();
+    Toast.makeText(context, context.getString(result), Toast.LENGTH_SHORT).show();
 
     if (result == R.string.delete_success)
-      fragment.startActivity(new Intent(fragment.getActivity(), TodoListActivity.class));
+      context.startActivity(new Intent(context, TodoListActivity.class));
   }
 
 }

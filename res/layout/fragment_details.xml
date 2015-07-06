@@ -26,7 +26,7 @@
             android:text="This is the task&apos;s description. Lorem ipsum dolor sit amet foo bar baz blah test test test." />
 
         <TextView
-            android:id="@+id/expiryTextView"
+            android:id="@+id/listItemExpiryTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="2"

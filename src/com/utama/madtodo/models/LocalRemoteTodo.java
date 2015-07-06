@@ -25,6 +25,11 @@ public class LocalRemoteTodo extends TodoEntity {
     return ret;
   }
 
+  
+  public static List<LocalRemoteTodo> findAll() {
+    return LocalRemoteTodo.findAll(null);
+  }
+  
 
   public static List<LocalRemoteTodo> findAll(String sortOrder) {
     List<LocalTodo> locals = LocalTodo.findAll(sortOrder);

@@ -28,7 +28,7 @@
     <string name="synchronizing">Synchronizing tasks with remote server</string>
     <string name="synchronization_success">Tasks were successfully synchronized with remote server</string>
     <string name="task_due_text" formatted="false">Due %s at %s</string>
-    <string name="task_no_due_text" formatted="false">Open task</string>    
+    <string name="task_no_due_text" formatted="false">No due date set</string>    
     <string name="task_important_text">Task is important</string>
     <string name="task_not_important_text">Task has normal priority</string>    
     <string name="task_done_text">Task was marked as done</string>

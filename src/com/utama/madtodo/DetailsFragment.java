@@ -32,7 +32,7 @@ public class DetailsFragment extends SingleTodoFragment
   protected void setupView(View view) {
     nameTextView = (TextView) view.findViewById(R.id.nameTextView);
     descriptionTextView = (TextView) view.findViewById(R.id.descriptionTextView);
-    expiryTextView = (TextView) view.findViewById(R.id.expiryTextView);
+    expiryTextView = (TextView) view.findViewById(R.id.listItemExpiryTextView);
     isImportantTextView = (TextView) view.findViewById(R.id.isImportantTextView);
     isDoneTextView = (TextView) view.findViewById(R.id.isDoneTextView);
   }

@@ -8,7 +8,7 @@ import com.utama.madtodo.R;
 import com.utama.madtodo.TodoListActivity;
 import com.utama.madtodo.models.LocalRemoteTodo;
 
-import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -18,12 +18,12 @@ import android.widget.Toast;
 public class SaveAsync extends AsyncTask<LocalRemoteTodo, Void, Integer> {
 
   private static final String TAG = "CreateTask";
-  private final Fragment fragment;
+  private final Context context;
 
 
-  public SaveAsync(Fragment fragment) {
+  public SaveAsync(Context context) {
     super();
-    this.fragment = fragment;
+    this.context = context;
   }
 
 
@@ -54,10 +54,10 @@ public class SaveAsync extends AsyncTask<LocalRemoteTodo, Void, Integer> {
   @Override
   protected void onPostExecute(Integer result) {
     super.onPostExecute(result);
-    Toast.makeText(fragment.getActivity(), fragment.getString(result), Toast.LENGTH_SHORT).show();
+    Toast.makeText(context, context.getString(result), Toast.LENGTH_SHORT).show();
 
-    if (result == R.string.edit_success)
-      fragment.startActivity(new Intent(fragment.getActivity(), TodoListActivity.class));
+    if (result == R.string.edit_success && context instanceof TodoListActivity == false)
+      context.startActivity(new Intent(context, TodoListActivity.class));
   }
 
 }
