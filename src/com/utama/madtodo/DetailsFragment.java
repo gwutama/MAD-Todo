@@ -51,22 +51,20 @@ public class DetailsFragment extends Fragment {
 
   private void setupDeleteDialog() {
     deleteDialog = new AlertDialog.Builder(getActivity());
-    deleteDialog.setMessage("Delete this task?")
-      .setCancelable(false)
+    deleteDialog.setMessage("Delete this task?").setCancelable(false)
         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-        
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          new DeleteTask().execute(activeTodoId);
-        }
-      })
-      .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-        
-        @Override
-        public void onClick(DialogInterface dialog, int which) {
-          dialog.cancel();
-        }
-      });
+
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            new DeleteTask().execute(activeTodoId);
+          }
+        }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            dialog.cancel();
+          }
+        });
   }
 
 
@@ -107,6 +105,11 @@ public class DetailsFragment extends Fragment {
     if (id == R.id.action_settings) {
       Log.d(TAG, "onOptionsItemSelected: action_settings");
       startActivity(new Intent(getActivity(), SettingsActivity.class));
+      return true;
+    } else if (id == R.id.action_edit) {
+      Log.d(TAG, "onOptionsItemSelected: action_edit");
+      startActivity(
+          new Intent(getActivity(), EditActivity.class).putExtra(DbConsts.Column.ID, activeTodoId));
       return true;
     } else if (id == R.id.action_delete) {
       Log.d(TAG, "onOptionsItemSelected: action_delete");

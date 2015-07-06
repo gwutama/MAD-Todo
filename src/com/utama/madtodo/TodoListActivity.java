@@ -80,14 +80,20 @@ public class TodoListActivity extends Activity {
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
-      Toast.makeText(TodoListActivity.this, R.string.synchronizing, Toast.LENGTH_LONG).show();      
+      Toast.makeText(TodoListActivity.this, R.string.synchronizing, Toast.LENGTH_SHORT).show();      
     }
     
     
     @Override
     protected void onPostExecute(Integer result) {
-      super.onPostExecute(result);
+      super.onPostExecute(result);      
       Toast.makeText(TodoListActivity.this, getString(result), Toast.LENGTH_SHORT).show();      
+      
+      if (result == R.string.synchronization_success) {
+        TodoListFragment fragment =
+            (TodoListFragment) getFragmentManager().findFragmentById(R.id.todo_list_fragment);
+        fragment.forceRefreshList();
+      }
     }
 
   }

@@ -17,6 +17,7 @@ import android.widget.ListView;
 public class TodoListFragment extends ListFragment {
 
   private static final String TAG = "TodoListFragment";
+  TodoListAdapter adapter;
   List<LocalTodo> todos;
 
 
@@ -26,11 +27,20 @@ public class TodoListFragment extends ListFragment {
     super.onActivityCreated(savedInstanceState);
     DbHelper.setupPersistance(getActivity());
     todos = LocalTodo.findAll();
-    TodoListAdapter adapter = new TodoListAdapter(getActivity(), todos);
+    adapter = new TodoListAdapter(getActivity(), todos);
     setListAdapter(adapter);
   }
 
 
+  public void forceRefreshList() {
+    Log.d(TAG, "refreshList");
+    todos = LocalTodo.findAll();
+    adapter.clear();
+    adapter.addAll(todos);
+    adapter.notifyDataSetChanged();
+  }
+
+  
   @Override
   public void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);

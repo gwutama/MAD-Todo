@@ -57,7 +57,10 @@ public class LocalRemoteTodo extends TodoEntity {
 
   @Override
   protected long update() throws IOException, JSONException {
+    LocalTodo localOrig = LocalTodo.findOne(id);
     LocalTodo local = buildLocalTodo();
+    local.setId(localOrig.getId());
+    local.setRemoteId(localOrig.getRemoteId());
     long localRowId = local.update();
 
     if (localRowId > -1) {
@@ -103,7 +106,7 @@ public class LocalRemoteTodo extends TodoEntity {
     } else {
       List<RemoteTodo> remotes = RemoteTodo.findAll();
       for (RemoteTodo remote : remotes) {
-        long remoteId = remote.getId();
+        long remoteId = remote.getRemoteId();
         LocalTodo local = new LocalTodo(remote);
         local.setId(-1);
         local.setRemoteId(remoteId);
