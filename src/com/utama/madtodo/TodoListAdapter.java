@@ -69,7 +69,7 @@ public class TodoListAdapter extends ArrayAdapter<LocalTodo> {
 
     if (expiry.getTime() > 0) {
       String expDate = DateFormat.getDateInstance().format(expiry);
-      String expTime = DateFormat.getTimeInstance().format(expiry);
+      String expTime = DateFormat.getTimeInstance(DateFormat.SHORT).format(expiry);
       String expText =
           String.format(getContext().getString(R.string.task_due_text), expDate, expTime);
       expiryTextView.setText(expText);
