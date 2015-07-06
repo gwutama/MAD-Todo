@@ -56,7 +56,7 @@ public class SaveAsync extends AsyncTask<LocalRemoteTodo, Void, Integer> {
     super.onPostExecute(result);
     Toast.makeText(context, context.getString(result), Toast.LENGTH_SHORT).show();
 
-    if (result == R.string.edit_success)
+    if (result == R.string.edit_success || result == R.string.network_error)
       context.startActivity(new Intent(context, TodoListActivity.class));
   }
 

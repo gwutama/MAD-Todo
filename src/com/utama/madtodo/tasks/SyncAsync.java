@@ -56,7 +56,7 @@ public class SyncAsync extends AsyncTask<Void, Void, Integer> {
     super.onPostExecute(result);
     Toast.makeText(context, context.getString(result), Toast.LENGTH_SHORT).show();
 
-    if (result == R.string.synchronization_success) {
+    if (result == R.string.synchronization_success || result == R.string.network_error) {
       TodoListActivity activity = (TodoListActivity) context;
       FragmentManager fragmentManager = activity.getFragmentManager();
       TodoListFragment fragment =

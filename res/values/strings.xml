@@ -23,7 +23,7 @@
     <string name="api_root">API Root</string>
     <string name="api_root_summary">API root of the web service</string>
     <string name="api_root_error">Invalid API root</string>
-    <string name="network_error">Network error</string>
+    <string name="network_error">Could not contact remote server\nChanges are saved locally</string>
     <string name="response_error">Response error</string>
     <string name="synchronizing">Synchronizing tasks with remote server</string>
     <string name="synchronization_success">Tasks were successfully synchronized with remote server</string>

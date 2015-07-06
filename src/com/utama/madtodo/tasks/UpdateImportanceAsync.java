@@ -17,7 +17,8 @@ public class UpdateImportanceAsync extends SaveAsync {
 
   @Override
   protected void onPostExecute(Integer result) {
-    if (result == R.string.edit_success && context instanceof TodoListActivity) {
+    if ((result == R.string.edit_success || result == R.string.network_error)
+        && context instanceof TodoListActivity) {
       TodoListActivity activity = (TodoListActivity) context;
       FragmentManager fragmentManager = activity.getFragmentManager();
       TodoListFragment fragment =
