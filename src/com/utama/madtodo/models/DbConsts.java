@@ -6,7 +6,7 @@ public class DbConsts {
   public static final String DB_NAME = "madtodo.db";
   public static final int DB_VERSION = 1;
   public static final String TABLE = "todos";
-  public static final String DEFAULT_SORT = Column.ID + " DESC";
+  public static final String DEFAULT_SORT = Column.IS_MARKED_DONE + " ASC";
 
   
   // DB columns constants

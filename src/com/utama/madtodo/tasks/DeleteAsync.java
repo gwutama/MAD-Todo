@@ -46,7 +46,7 @@ public final class DeleteAsync extends AsyncTask<Long, Void, Integer> {
 
   @Override
   protected void onPostExecute(Integer result) {
-    super.onPostExecute(result);
+    super.onPostExecute(result);    
     Toast.makeText(context, context.getString(result), Toast.LENGTH_SHORT).show();
 
     if (result == R.string.delete_success)

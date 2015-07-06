@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.utama.madtodo.models.DbConsts;
 import com.utama.madtodo.models.DbHelper;
-import com.utama.madtodo.models.LocalRemoteTodo;
+import com.utama.madtodo.models.LocalTodo;
 
 import android.app.ListFragment;
 import android.content.Intent;
@@ -18,7 +18,7 @@ public class TodoListFragment extends ListFragment {
 
   private static final String TAG = "TodoListFragment";
   TodoListAdapter adapter;
-  List<LocalRemoteTodo> todos;
+  List<LocalTodo> todos;
 
 
   @Override
@@ -26,15 +26,15 @@ public class TodoListFragment extends ListFragment {
     Log.d(TAG, "onActivityCreated");
     super.onActivityCreated(savedInstanceState);
     DbHelper.setupPersistance(getActivity());
-    todos = LocalRemoteTodo.findAll();
+    todos = LocalTodo.findAll();
     adapter = new TodoListAdapter(getActivity(), todos);
     setListAdapter(adapter);
   }
 
-
+  
   public void forceRefreshList() {
     Log.d(TAG, "refreshList");
-    todos = LocalRemoteTodo.findAll();
+    todos = LocalTodo.findAll();
     adapter.clear();
     adapter.addAll(todos);
     adapter.notifyDataSetChanged();
@@ -45,7 +45,7 @@ public class TodoListFragment extends ListFragment {
   public void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
 
-    LocalRemoteTodo todo = todos.get(position);
+    LocalTodo todo = todos.get(position);
     Log.d(TAG, "onListItemClick: " + todo.getId());
 
     DetailsFragment fragment =

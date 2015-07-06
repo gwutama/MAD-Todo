@@ -91,7 +91,7 @@ public class TodoListActivity extends Activity {
       
       if (result == R.string.synchronization_success) {
         TodoListFragment fragment =
-            (TodoListFragment) getFragmentManager().findFragmentById(R.id.todo_list_fragment);
+            (TodoListFragment) getFragmentManager().findFragmentById(R.id.todoListFragment);
         fragment.forceRefreshList();
       }
     }

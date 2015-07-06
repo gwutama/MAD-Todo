@@ -18,7 +18,7 @@ import android.widget.Toast;
 public class SaveAsync extends AsyncTask<LocalRemoteTodo, Void, Integer> {
 
   private static final String TAG = "CreateTask";
-  private final Context context;
+  protected final Context context;
 
 
   public SaveAsync(Context context) {
@@ -56,7 +56,7 @@ public class SaveAsync extends AsyncTask<LocalRemoteTodo, Void, Integer> {
     super.onPostExecute(result);
     Toast.makeText(context, context.getString(result), Toast.LENGTH_SHORT).show();
 
-    if (result == R.string.edit_success && context instanceof TodoListActivity == false)
+    if (result == R.string.edit_success)
       context.startActivity(new Intent(context, TodoListActivity.class));
   }
 
