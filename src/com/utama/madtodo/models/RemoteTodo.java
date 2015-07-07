@@ -1,10 +1,6 @@
 package com.utama.madtodo.models;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -15,13 +11,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.utama.madtodo.utils.SimpleRestClient;
+
 import android.text.TextUtils;
-import android.util.Log;
 
 
 public class RemoteTodo extends TodoEntity {
 
-  private static final String TAG = "RemoteTodo";
+  private static final String RESOURCE_PATH = "/todos";
   private static URL apiRoot;
 
 
@@ -60,7 +57,7 @@ public class RemoteTodo extends TodoEntity {
       remoteId = obj.getLong("id");
       name = obj.getString("name");
       description = obj.getString("description");
-      
+
       try {
         expiry = new Date(obj.getLong("expiry"));
       } catch (JSONException e) {
@@ -84,21 +81,24 @@ public class RemoteTodo extends TodoEntity {
   }
 
 
-  public static List<RemoteTodo> findAll() throws JSONException, IOException {
-    HttpURLConnection conn = null;
-    conn = openConnection("GET", apiRoot);
-    String resp = readResponse(conn);
-    List<RemoteTodo> todos = buildEntitiesFromJson(resp);
+  public static List<RemoteTodo> findAll() throws IOException, JSONException {
+    SimpleRestClient rest = new SimpleRestClient(apiRoot, "GET");
+    List<RemoteTodo> todos;
 
-    if (conn != null) {
-      conn.disconnect();
+    try {
+      rest.setPath(RESOURCE_PATH);      
+      rest.open();
+      String resp = rest.read();
+      todos = buildEntities(resp);
+    } finally {
+      rest.close();
     }
 
     return todos;
   }
 
 
-  private static List<RemoteTodo> buildEntitiesFromJson(String json) throws JSONException {
+  private static List<RemoteTodo> buildEntities(String json) throws JSONException {
     JSONArray jsonArr = new JSONArray(json);
     List<RemoteTodo> ret = new ArrayList<RemoteTodo>();
 
@@ -112,21 +112,19 @@ public class RemoteTodo extends TodoEntity {
   }
 
 
-  public static RemoteTodo findOne(long remoteId) throws IOException {
-    HttpURLConnection conn = null;
+  public static RemoteTodo findOne(long remoteId) throws IOException, JSONException {
+    SimpleRestClient rest = new SimpleRestClient(apiRoot, "GET");
     RemoteTodo todo = null;
 
     try {
-      URL url = new URL(apiRoot + "/" + Long.toString(remoteId));
-      conn = openConnection("GET", url);
-      String resp = readResponse(conn);
-      todo = new RemoteTodo(resp);
+      rest.setPath(RESOURCE_PATH + "/" + Long.toString(remoteId));
+      rest.open();
+      todo = new RemoteTodo(rest.readJson());
     } catch (MalformedURLException e) {
       e.printStackTrace();
-      throw new IOException("Network error. Malformed URL?");  
+      throw new IOException("Network error. Malformed API root or resource path?");
     } finally {
-      if (conn != null)
-        conn.disconnect();
+      rest.close();
     }
 
     return todo;
@@ -135,20 +133,18 @@ public class RemoteTodo extends TodoEntity {
 
   @Override
   protected long create() throws IOException, JSONException {
-    if (TextUtils.isEmpty(name)) {
+    if (TextUtils.isEmpty(name))
       throw new IllegalArgumentException("Task name cannot be empty");
-    }
 
-    HttpURLConnection conn = null;
+    SimpleRestClient rest = new SimpleRestClient(apiRoot, "POST");
 
     try {
-      conn = openConnection("POST", apiRoot);
-      writeRequestBody(conn, buildRequestPayload().toString());
-      String resp = readResponse(conn);
-      setFromJsonObject(new JSONObject(resp));
+      rest.setPath(RESOURCE_PATH);      
+      rest.open();
+      rest.write(buildRequestPayload());
+      setFromJsonObject(rest.readJson());
     } finally {
-      if (conn != null)
-        conn.disconnect();
+      rest.close();
     }
 
     return remoteId;
@@ -157,20 +153,18 @@ public class RemoteTodo extends TodoEntity {
 
   @Override
   protected long update() throws IOException, JSONException {
-    if (TextUtils.isEmpty(name)) {
+    if (TextUtils.isEmpty(name))
       throw new IllegalArgumentException("Task name cannot be empty");
-    }
 
-    HttpURLConnection conn = null;
+    SimpleRestClient rest = new SimpleRestClient(apiRoot, "PUT");
 
     try {
-      conn = openConnection("PUT", apiRoot);
-      writeRequestBody(conn, buildRequestPayload().toString());
-      String resp = readResponse(conn);
-      setFromJsonObject(new JSONObject(resp));
+      rest.setPath(RESOURCE_PATH);      
+      rest.open();
+      rest.write(buildRequestPayload());
+      setFromJsonObject(rest.readJson());
     } finally {
-      if (conn != null)
-        conn.disconnect();
+      rest.close();
     }
 
     return remoteId;
@@ -179,26 +173,21 @@ public class RemoteTodo extends TodoEntity {
 
   @Override
   public long delete() throws IOException {
-    HttpURLConnection conn = null;
-    String resp;
+    SimpleRestClient rest = new SimpleRestClient(apiRoot, "DELETE");
+    String response;
 
     try {
-      URL url = new URL(apiRoot + "/" + Long.toString(remoteId));
-      Log.d(TAG, "delete: " + url.toString());      
-      conn = openConnection("DELETE", url);
-      resp = readResponse(conn);
+      rest.setPath(RESOURCE_PATH + "/" + Long.toString(remoteId));
+      rest.open();
+      response = rest.read();
     } catch (MalformedURLException e) {
       e.printStackTrace();
-      throw new IOException("Network error. Malformed URL?");
+      throw new IOException("Network error. Malformed API root or resource path?");
     } finally {
-      if (conn != null)
-        conn.disconnect();
+      rest.close();
     }
 
-    if (resp.equals("true"))
-      return 1;
-    else
-      return 0;
+    return response.equals("true") ? 1 : 0;
   }
 
 
@@ -207,60 +196,26 @@ public class RemoteTodo extends TodoEntity {
 
     List<RemoteTodo> todos = findAll();
     for (RemoteTodo todo : todos) {
-      if (todo.delete() > 0) {
+      if (todo.delete() > 0)
         deletedRows++;
-      }
     }
 
     return deletedRows;
   }
 
 
-  private static HttpURLConnection openConnection(String requestMethod, URL url)
-      throws IOException {
-    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-    conn.setRequestMethod(requestMethod);
-    conn.addRequestProperty("Accept", "application/json");
-    conn.addRequestProperty("Content-type", "application/json; charset=UTF-8");
-
-    return conn;
-  }
-
-
-  private static String readResponse(HttpURLConnection conn) throws IOException {
-    if (conn == null)
-      throw new IOException("HttpURLConnection is null");
-
-    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-    String inputLine = null;
-    StringBuffer response = new StringBuffer();
-
-    while ((inputLine = in.readLine()) != null) {
-      response.append(inputLine);
-    }
-
-    in.close();
-
-    return response.toString();
-  }
-
-
-  private void writeRequestBody(HttpURLConnection conn, String body) throws IOException {
-    if (conn == null)
-      throw new IOException("HttpURLConnection is null");
-
-    OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-    wr.write(body.toString());
-    wr.flush();
-  }
-
-
-  private JSONObject buildRequestPayload() throws JSONException {
+  private JSONObject buildRequestPayload() {
     JSONObject payload = new JSONObject();
-    payload.put("id", remoteId);
-    payload.put("name", name);
-    payload.put("description", description);
-    payload.put("expiry", expiry.getTime());
+    
+    try {
+      payload.put("id", remoteId);
+      payload.put("name", name);
+      payload.put("description", description);
+      payload.put("expiry", expiry.getTime());
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+    
     return payload;
   }
 

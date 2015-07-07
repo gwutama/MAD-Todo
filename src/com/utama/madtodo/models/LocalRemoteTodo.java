@@ -85,10 +85,13 @@ public class LocalRemoteTodo extends TodoEntity {
     LocalTodo local = LocalTodo.findOne(id);
     long remoteId = local.getRemoteId();
     long localCount = local.delete();
-    RemoteTodo remote = RemoteTodo.findOne(remoteId);
-
-    if (remote != null)
-      remote.delete();
+    RemoteTodo remote;
+    
+    try {
+      remote = RemoteTodo.findOne(remoteId);
+      remote.delete();      
+    } catch (JSONException e) {
+    }
 
     return localCount;
   }

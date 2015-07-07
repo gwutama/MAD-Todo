@@ -23,7 +23,7 @@
     <string name="api_root">API Root</string>
     <string name="api_root_summary">API root of the web service</string>
     <string name="api_root_error">Invalid API root</string>
-    <string name="network_error">Could not contact remote server\nChanges are saved locally</string>
+    <string name="network_error">Could not contact remote server. Changes are saved locally.</string>
     <string name="response_error">Response error</string>
     <string name="synchronizing">Synchronizing tasks with remote server</string>
     <string name="synchronization_success">Tasks were successfully synchronized with remote server</string>
@@ -41,5 +41,17 @@
     <string name="no">No</string>
     <string name="update_markeddone_error">Error updating task\'s status</string>
     <string name="update_importance_error">Error updating task\'s importance</string>
+    
+    <!-- Strings related to login -->
+    <string name="title_activity_login">Sign in</string>    
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="auth_no_email">Email cannot be empty</string>
+    <string name="auth_invalid_email"></string>
+    <string name="auth_success">Login success</string>
+    <string name="auth_failure">Incorrect login credentials</string>    
+    <string name="auth_network_error">Could not contact remote server. Is the API path correct?</string>    
     
 </resources>

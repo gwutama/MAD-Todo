@@ -57,6 +57,7 @@ public class DbHelper extends SQLiteOpenHelper {
       SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity);
       URL apiRoot = new URL(pref.getString("apiRoot", ""));
       RemoteTodo.setApiRoot(apiRoot);
+      RemoteUser.setApiRoot(apiRoot);
     } catch (MalformedURLException e) {
       e.printStackTrace();
       Toast.makeText(activity, R.string.api_root_error, Toast.LENGTH_SHORT).show();
