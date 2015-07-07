@@ -30,7 +30,7 @@ public abstract class SingleTodoFragment extends Fragment implements OnClickList
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
-    DbHelper.setupPersistance(getActivity());
+    DbHelper.setupPersistence(getActivity());
 
     if (this instanceof ActionDeleteable)
       setupDeleteDialog();

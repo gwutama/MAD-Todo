@@ -2,6 +2,7 @@ package com.utama.madtodo;
 
 import com.utama.madtodo.models.DbConsts;
 import com.utama.madtodo.models.DbHelper;
+import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.tasks.SyncAsync;
 
 import android.app.Activity;
@@ -13,20 +14,32 @@ import android.view.MenuItem;
 
 public class TodoListActivity extends Activity {
 
+  private static boolean isSynchronizedOnStart;
   private TodoListFragment todoListFragment;
-
-
+  
+  
+  @Override
+  public void onBackPressed() {
+    finish();
+  }
+  
+  
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_todo_list);
-    DbHelper.setupPersistance(this);
+    DbHelper.setupPersistence(this);
 
     todoListFragment =
-        (TodoListFragment) getFragmentManager().findFragmentById(R.id.todoListFragment);
+        (TodoListFragment) getFragmentManager().findFragmentById(R.id.todoListFragment);    
+    
+    if(!LocalRemoteTodo.offlineMode && !isSynchronizedOnStart) {
+      isSynchronizedOnStart = true;
+      new SyncAsync(this).execute();
+    }
   }
-
-
+  
+  
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.todolist, menu);

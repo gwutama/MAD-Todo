@@ -30,10 +30,7 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
   @Override
   protected Integer doInBackground(Void... params) {
     try {
-      if (user.auth())
-        return R.string.auth_success;
-      else
-        return R.string.auth_failure;
+      return user.auth() ? R.string.auth_success : R.string.auth_failure;
     } catch (IOException e) {
       e.printStackTrace();
       return R.string.auth_network_error;
@@ -43,7 +40,7 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
 
   @Override
   protected void onPostExecute(Integer result) {
-    Toast.makeText(context, context.getString(result), Toast.LENGTH_SHORT).show();
+    Toast.makeText(context, context.getString(result), Toast.LENGTH_LONG).show();
 
     if (context instanceof LoginActivity) {
       LoginActivity activity = (LoginActivity) context;

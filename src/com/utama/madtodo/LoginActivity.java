@@ -1,6 +1,7 @@
 package com.utama.madtodo;
 
 import com.utama.madtodo.models.DbHelper;
+import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.models.RemoteUser;
 import com.utama.madtodo.tasks.AuthAsync;
 
@@ -8,6 +9,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -32,11 +34,17 @@ public class LoginActivity extends Activity {
 
 
   @Override
+  public void onBackPressed() {
+    finish();
+  }
+
+  
+  @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
-
-    DbHelper.setupPersistance(this);
+    
+    // Track user data
     user = new RemoteUser();
 
     // Email edit text
@@ -67,8 +75,8 @@ public class LoginActivity extends Activity {
         return false;
       }
     });
-    
-    
+
+
     // Sign in button
     signInButton = (Button) findViewById(R.id.authSignInButton);
     signInButton.setOnClickListener(new OnClickListener() {
@@ -83,41 +91,48 @@ public class LoginActivity extends Activity {
     loginProgress = new ProgressDialog(this);
     loginProgress.setTitle("Logging in");
     loginProgress.setIndeterminate(true);
-    
 
-    attemptAutoLogin();
+    DbHelper.setupPersistence(this);
+    
+    // Attempt auto login if offline mode is set to off, otherwise work locally (go directly
+    // to the todo list activity.
+    if(!LocalRemoteTodo.offlineMode)
+      attemptAutoLogin();
+    else
+      startActivity(new Intent(this, TodoListActivity.class));
   }
-  
-  
+
+
   @Override
   protected void onResume() {
-    super.onResume();    
+    super.onResume();
     fillInEmailPasswordFieldsFromPreferences();
   }
-  
-  
+
+
   private void attemptAutoLogin() {
     fillInEmailPasswordFieldsFromPreferences();
-    
+
     if (signInButton.isEnabled())
-      attemptLogin();    
+      attemptLogin();
   }
-  
-  
+
+
   private void fillInEmailPasswordFieldsFromPreferences() {
     // Fill in default email and password from preference manager
     SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
     String email = pref.getString("email", "");
+
     if (!TextUtils.isEmpty(email))
-      emailText.setError(null);   // reset error message
+      emailText.setError(null); // reset error message
     emailText.setText(email);
-    
+
     String password = pref.getString("password", "");
     passwordText.setText(password);
 
-    enableDisableSignInButton();     
+    enableDisableSignInButton();
   }
-  
+
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -130,10 +145,10 @@ public class LoginActivity extends Activity {
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.action_settings:
-        startActivity(new Intent(this, SettingsActivity.class));      
+        startActivity(new Intent(this, SettingsActivity.class));
         return true;
     }
-    
+
     return false;
   }
 
@@ -151,6 +166,9 @@ public class LoginActivity extends Activity {
 
 
   public void attemptLogin() {
+    if (LocalRemoteTodo.offlineMode)
+      return;
+      
     // Reset errors.
     emailText.setError(null);
     passwordText.setError(null);
@@ -163,6 +181,17 @@ public class LoginActivity extends Activity {
 
     showProgress(true);
     new AuthAsync(this, user).execute();
+    
+    saveUserCredentialsInPreferences(email, password);
+  }
+  
+
+  private void saveUserCredentialsInPreferences(String email, String password) {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    Editor editor = prefs.edit();
+    editor.putString("email", email);
+    editor.putString("password", password);
+    editor.commit();
   }
 
 

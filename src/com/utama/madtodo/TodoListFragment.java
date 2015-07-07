@@ -31,7 +31,7 @@ public class TodoListFragment extends ListFragment {
   public void onActivityCreated(Bundle savedInstanceState) {
     Log.d(TAG, "onActivityCreated");
     super.onActivityCreated(savedInstanceState);
-    DbHelper.setupPersistance(getActivity());
+    DbHelper.setupPersistence(getActivity());
     todos = LocalTodo.findAll(sortOrder);
     adapter = new TodoListAdapter(getActivity(), todos);
     setListAdapter(adapter);

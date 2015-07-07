@@ -10,12 +10,20 @@
         android:key="password"
         android:summary="@string/password_summary"
         android:title="@string/password" />
-    <EditTextPreference
-        android:key="apiRoot"
-        android:summary="@string/api_root_summary"
-        android:title="@string/api_root" />
+
     <SwitchPreference
         android:key="offlineMode"
         android:summary="@string/offline_mode_summary"
         android:title="@string/offline_mode" />
-</PreferenceScreen>
+
+    <EditTextPreference
+        android:key="apiRoot"
+        android:summary="@string/api_root_summary"
+        android:title="@string/api_root" />
+
+    <Preference
+        android:key="forgetCredentials"
+        android:summary="@string/forget_credentials_summary"
+        android:title="@string/forget_credentials" />
+
+</PreferenceScreen>
