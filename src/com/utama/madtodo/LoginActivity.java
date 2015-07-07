@@ -6,9 +6,14 @@ import com.utama.madtodo.tasks.AuthAsync;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
@@ -30,30 +35,29 @@ public class LoginActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
-    
+
     DbHelper.setupPersistance(this);
     user = new RemoteUser();
-    
 
     // Email edit text
-    emailText = (AutoCompleteTextView) findViewById(R.id.authEmailText);    
+    emailText = (AutoCompleteTextView) findViewById(R.id.authEmailText);
     emailText.setOnKeyListener(new View.OnKeyListener() {
       @Override
       public boolean onKey(View v, int keyCode, KeyEvent event) {
         String email = emailText.getText().toString();
-        
+
         if (TextUtils.isEmpty(email))
           emailText.setError(getString(R.string.auth_no_email));
         else
           emailText.setError(null);
-          
+
         enableDisableSignInButton();
         return false;
       }
     });
     emailText.setError(getString(R.string.auth_no_email));
-    
-    
+
+
     // Password edit text
     passwordText = (EditText) findViewById(R.id.authPasswordText);
     passwordText.setOnKeyListener(new View.OnKeyListener() {
@@ -63,7 +67,7 @@ public class LoginActivity extends Activity {
         return false;
       }
     });
-
+    
     
     // Sign in button
     signInButton = (Button) findViewById(R.id.authSignInButton);
@@ -74,11 +78,63 @@ public class LoginActivity extends Activity {
       }
     });
 
-    
+
     // Progress dialog
     loginProgress = new ProgressDialog(this);
     loginProgress.setTitle("Logging in");
     loginProgress.setIndeterminate(true);
+    
+
+    attemptAutoLogin();
+  }
+  
+  
+  @Override
+  protected void onResume() {
+    super.onResume();    
+    fillInEmailPasswordFieldsFromPreferences();
+  }
+  
+  
+  private void attemptAutoLogin() {
+    fillInEmailPasswordFieldsFromPreferences();
+    
+    if (signInButton.isEnabled())
+      attemptLogin();    
+  }
+  
+  
+  private void fillInEmailPasswordFieldsFromPreferences() {
+    // Fill in default email and password from preference manager
+    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+    String email = pref.getString("email", "");
+    if (!TextUtils.isEmpty(email))
+      emailText.setError(null);   // reset error message
+    emailText.setText(email);
+    
+    String password = pref.getString("password", "");
+    passwordText.setText(password);
+
+    enableDisableSignInButton();     
+  }
+  
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    getMenuInflater().inflate(R.menu.login, menu);
+    return true;
+  }
+
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.action_settings:
+        startActivity(new Intent(this, SettingsActivity.class));      
+        return true;
+    }
+    
+    return false;
   }
 
 

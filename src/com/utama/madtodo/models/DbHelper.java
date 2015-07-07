@@ -58,6 +58,9 @@ public class DbHelper extends SQLiteOpenHelper {
       URL apiRoot = new URL(pref.getString("apiRoot", ""));
       RemoteTodo.setApiRoot(apiRoot);
       RemoteUser.setApiRoot(apiRoot);
+      
+      boolean offlineMode = pref.getBoolean("offlineMode", true);
+      LocalRemoteTodo.offlineMode = offlineMode;      
     } catch (MalformedURLException e) {
       e.printStackTrace();
       Toast.makeText(activity, R.string.api_root_error, Toast.LENGTH_SHORT).show();

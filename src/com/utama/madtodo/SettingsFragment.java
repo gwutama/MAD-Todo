@@ -1,5 +1,7 @@
 package com.utama.madtodo;
 
+import com.utama.madtodo.models.DbHelper;
+
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
@@ -29,9 +31,10 @@ public class SettingsFragment extends PreferenceFragment
   
 
   @Override
-  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-    // TODO Try to login
+  public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {    
+    DbHelper.setupPersistance(getActivity());
     
+    // TODO Try to login
   }
 
 }

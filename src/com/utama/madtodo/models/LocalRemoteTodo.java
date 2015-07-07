@@ -9,6 +9,9 @@ import org.json.JSONException;
 
 public class LocalRemoteTodo extends TodoEntity {
 
+  public static boolean offlineMode;
+  
+  
   public LocalRemoteTodo() {
     super();
   }
@@ -20,7 +23,7 @@ public class LocalRemoteTodo extends TodoEntity {
 
 
   public static LocalRemoteTodo findOne(long id) {
-    LocalTodo local = LocalTodo.findOne(id);
+    LocalTodo local = LocalTodo.findOne(id);    
     LocalRemoteTodo ret = new LocalRemoteTodo(local);
     return ret;
   }
@@ -49,7 +52,7 @@ public class LocalRemoteTodo extends TodoEntity {
     LocalTodo local = buildLocalTodo();
     long localRowId = local.create();
 
-    if (localRowId > -1) {
+    if (!offlineMode && localRowId > -1) {
       RemoteTodo remote = new RemoteTodo(local);
       long remoteId = remote.create();
       local.setRemoteId(remoteId);
@@ -68,7 +71,7 @@ public class LocalRemoteTodo extends TodoEntity {
     local.setRemoteId(localOrig.getRemoteId());
     long localRowId = local.update();
 
-    if (localRowId > -1) {
+    if (!offlineMode && localRowId > -1) {
       RemoteTodo remote = RemoteTodo.findOne(local.getRemoteId());
       if (remote != null) {
         remote.setTodo(local);
@@ -85,12 +88,13 @@ public class LocalRemoteTodo extends TodoEntity {
     LocalTodo local = LocalTodo.findOne(id);
     long remoteId = local.getRemoteId();
     long localCount = local.delete();
-    RemoteTodo remote;
-    
-    try {
-      remote = RemoteTodo.findOne(remoteId);
-      remote.delete();      
-    } catch (JSONException e) {
+
+    if (!offlineMode) {
+      try {
+        RemoteTodo remote = RemoteTodo.findOne(remoteId);
+        remote.delete();      
+      } catch (JSONException e) {
+      }
     }
 
     return localCount;
@@ -98,6 +102,9 @@ public class LocalRemoteTodo extends TodoEntity {
 
   
   public static void sync() throws IOException, JSONException {
+    if (offlineMode)
+      throw new IOException();
+    
     String sortOrder = DbConsts.Column.ID + " ASC";
     List<LocalTodo> locals = LocalTodo.findAll(sortOrder);
 
