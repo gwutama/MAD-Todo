@@ -18,6 +18,7 @@ public class SimpleRestClient {
   private URL apiRoot;
   private URL resourceUrl;
   private String requestMethod;
+  private static int CONNECT_TIMEOUT_MS = 10000;
 
 
   public SimpleRestClient(URL apiRoot, String requestMethod) {
@@ -37,6 +38,7 @@ public class SimpleRestClient {
       conn.disconnect();
       
     conn = (HttpURLConnection) resourceUrl.openConnection();
+    conn.setConnectTimeout(CONNECT_TIMEOUT_MS);
     conn.setRequestMethod(requestMethod);
     conn.addRequestProperty("Accept", "application/json");
     conn.addRequestProperty("Content-type", "application/json; charset=UTF-8");
