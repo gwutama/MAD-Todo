@@ -3,6 +3,7 @@ package com.utama.madtodo;
 import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.models.RemoteUser;
 import com.utama.madtodo.tasks.AuthAsync;
+import com.utama.madtodo.tasks.TestConnectionAsync;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -31,6 +32,7 @@ public class LoginActivity extends Activity {
   private Button signInButton;
   private RemoteUser user;
   private ProgressDialog loginProgress;
+  private ProgressDialog testConnectionProgress;
   private TextView loginErrorTextView;
   private Boolean loginFailed;
 
@@ -40,26 +42,26 @@ public class LoginActivity extends Activity {
     finish();
   }
 
-  
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
-    
+
     // Track user data
     user = new RemoteUser();
-    
-    
+
+
     // Login error warning notification
     loginErrorTextView = (TextView) findViewById(R.id.loginErrorTextView);
     loginErrorTextView.setBackgroundColor(0xFFD43B0D);
     loginErrorTextView.setTextColor(0xFFFFFFFF);
     loginErrorTextView.setVisibility(TextView.GONE);
-    
-    loginFailed = getIntent().getBooleanExtra("isLoginFailure", false);
-    if (loginFailed)
+
+    setLoginFailed(getIntent().getBooleanExtra("isLoginFailure", false));
+    if (getLoginFailed())
       loginErrorTextView.setVisibility(TextView.VISIBLE);
-        
+
 
     // Email edit text
     emailText = (AutoCompleteTextView) findViewById(R.id.authEmailText);
@@ -87,7 +89,7 @@ public class LoginActivity extends Activity {
       @Override
       public boolean onKey(View v, int keyCode, KeyEvent event) {
         enableDisableSignInButton();
-        loginErrorTextView.setVisibility(TextView.GONE);        
+        loginErrorTextView.setVisibility(TextView.GONE);
         return false;
       }
     });
@@ -103,31 +105,43 @@ public class LoginActivity extends Activity {
     });
 
 
-    // Progress dialog
+    // Progress dialogs
     loginProgress = new ProgressDialog(this);
-    loginProgress.setTitle("Logging in");
+    loginProgress.setTitle(R.string.app_name);
+    loginProgress.setMessage(getString(R.string.auth_logging_in));
     loginProgress.setIndeterminate(true);
+    
+    testConnectionProgress = new ProgressDialog(this);
+    testConnectionProgress.setTitle(R.string.app_name);
+    testConnectionProgress.setMessage(getString(R.string.auth_testing_connection));
+    testConnectionProgress.setIndeterminate(true);
+    
 
-    
-    // Attempt auto login if offline mode is set to off, otherwise work locally (go directly
-    // to the todo list activity.
+    // Check whether device has connection to the web service. Otherwise offline mode will be 
+    // enabled in TestConnectionAsync and user will be redirected to the todo list activity.
+    showTestConnectionProgress(true);    
     LocalRemoteTodo.setupPersistence(this);
-    
-    if(!LocalRemoteTodo.isOfflineMode() && !loginFailed)
-      attemptAutoLogin();
-    else if(LocalRemoteTodo.isOfflineMode())
-      startActivity(new Intent(this, TodoListActivity.class));
+    new TestConnectionAsync(this).execute();
   }
 
 
   @Override
   protected void onResume() {
     super.onResume();
+    showLoginProgress(false);    
+    showTestConnectionProgress(false);
     fillInEmailPasswordFieldsFromPreferences();
   }
 
 
-  private void attemptAutoLogin() {
+  public void attemptAutoLogin() {
+    if (LocalRemoteTodo.isOfflineMode()) {
+      startActivity(new Intent(this, TodoListActivity.class));      
+      return;
+    }
+    
+    showTestConnectionProgress(false);
+    
     fillInEmailPasswordFieldsFromPreferences();
 
     if (signInButton.isEnabled())
@@ -182,10 +196,12 @@ public class LoginActivity extends Activity {
   }
 
 
-  public void attemptLogin() {
-    if (LocalRemoteTodo.isOfflineMode())
+  private void attemptLogin() {
+    if (LocalRemoteTodo.isOfflineMode()) {
+      startActivity(new Intent(this, TodoListActivity.class));      
       return;
-      
+    }
+
     // Reset errors.
     emailText.setError(null);
     passwordText.setError(null);
@@ -196,12 +212,12 @@ public class LoginActivity extends Activity {
     user.setEmail(email);
     user.setPassword(password);
 
-    showProgress(true);
+    showLoginProgress(true);
     new AuthAsync(this, user).execute();
-    
+
     saveUserCredentialsInPreferences(email, password);
   }
-  
+
 
   private void saveUserCredentialsInPreferences(String email, String password) {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -212,11 +228,29 @@ public class LoginActivity extends Activity {
   }
 
 
-  public void showProgress(boolean show) {
+  public void showLoginProgress(boolean show) {
     if (show)
       loginProgress.show();
     else
       loginProgress.hide();
+  }
+
+  
+  public void showTestConnectionProgress(boolean show) {
+    if (show)
+      testConnectionProgress.show();
+    else
+      testConnectionProgress.hide();    
+  }
+  
+
+  public Boolean getLoginFailed() {
+    return loginFailed;
+  }
+
+
+  public void setLoginFailed(Boolean loginFailed) {
+    this.loginFailed = loginFailed;
   }
 
 }

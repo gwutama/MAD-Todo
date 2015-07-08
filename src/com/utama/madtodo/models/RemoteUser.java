@@ -1,6 +1,7 @@
 package com.utama.madtodo.models;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,6 +86,9 @@ public class RemoteUser {
       rest.open();
       rest.write(buildRequestPayload());
       response = rest.read();
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+      throw new IOException("Network error. Malformed API root or resource path?");
     } finally {
       rest.close();
     }

@@ -50,7 +50,7 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
       if (result == R.string.auth_success)
         activity.finish();
 
-      activity.showProgress(false);
+      activity.showLoginProgress(false);
     }
 
     switch (result) {
@@ -73,6 +73,6 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
   @Override
   protected void onCancelled() {
     if (context instanceof LoginActivity)
-      ((LoginActivity) context).showProgress(false);
+      ((LoginActivity) context).showLoginProgress(false);
   }
 }

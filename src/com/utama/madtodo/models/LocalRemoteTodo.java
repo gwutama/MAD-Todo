@@ -194,4 +194,13 @@ public class LocalRemoteTodo extends TodoEntity {
     editor.commit();
     LocalRemoteTodo.setupPersistence(activity);    
   }
+  
+  
+  public static final void switchToOnlineMode(Activity activity) {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+    Editor editor = prefs.edit();
+    editor.putBoolean("offlineMode", false);
+    editor.commit();
+    LocalRemoteTodo.setupPersistence(activity);        
+  }
 }
