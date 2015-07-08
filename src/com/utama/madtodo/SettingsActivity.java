@@ -14,6 +14,8 @@ public class SettingsActivity extends Activity {
     // Try to re-login on back button click if offline mode is off.
     // Always assume that API root has been changed.
     // Otherwise just start todo list activity.
+    LocalRemoteTodo.setupPersistence(this);
+    
     if (LocalRemoteTodo.isOfflineMode())
       startActivity(new Intent(this, TodoListActivity.class));
     else

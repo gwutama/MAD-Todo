@@ -72,8 +72,6 @@ public class SettingsFragment extends PreferenceFragment
 
   @Override
   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-    LocalRemoteTodo.setupPersistence(getActivity());
-
     if (key.equals("offlineMode")) {
       setupOfflineModePreferenceDependencies();
     }

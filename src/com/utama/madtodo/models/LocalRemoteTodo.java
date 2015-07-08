@@ -9,7 +9,7 @@ import java.util.List;
 import org.json.JSONException;
 
 import com.utama.madtodo.R;
-import com.utama.madtodo.SettingsActivity;
+import com.utama.madtodo.TodoListActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -174,8 +174,8 @@ public class LocalRemoteTodo extends TodoEntity {
         e.printStackTrace();
         Toast.makeText(activity, R.string.api_root_error, Toast.LENGTH_LONG).show();
         
-        if (activity instanceof SettingsActivity == false)
-          activity.startActivity(new Intent(activity, SettingsActivity.class));
+        switchToOfflineMode(activity);        
+        activity.startActivity(new Intent(activity, TodoListActivity.class));
         
         return false;
       }
