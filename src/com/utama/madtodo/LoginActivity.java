@@ -20,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 
 public class LoginActivity extends Activity {
@@ -30,6 +31,8 @@ public class LoginActivity extends Activity {
   private Button signInButton;
   private RemoteUser user;
   private ProgressDialog loginProgress;
+  private TextView loginErrorTextView;
+  private Boolean loginFailed;
 
 
   @Override
@@ -45,6 +48,18 @@ public class LoginActivity extends Activity {
     
     // Track user data
     user = new RemoteUser();
+    
+    
+    // Login error warning notification
+    loginErrorTextView = (TextView) findViewById(R.id.loginErrorTextView);
+    loginErrorTextView.setBackgroundColor(0xFFD43B0D);
+    loginErrorTextView.setTextColor(0xFFFFFFFF);
+    loginErrorTextView.setVisibility(TextView.GONE);
+    
+    loginFailed = getIntent().getBooleanExtra("isLoginFailure", false);
+    if (loginFailed)
+      loginErrorTextView.setVisibility(TextView.VISIBLE);
+        
 
     // Email edit text
     emailText = (AutoCompleteTextView) findViewById(R.id.authEmailText);
@@ -59,6 +74,7 @@ public class LoginActivity extends Activity {
           emailText.setError(null);
 
         enableDisableSignInButton();
+        loginErrorTextView.setVisibility(TextView.GONE);
         return false;
       }
     });
@@ -71,6 +87,7 @@ public class LoginActivity extends Activity {
       @Override
       public boolean onKey(View v, int keyCode, KeyEvent event) {
         enableDisableSignInButton();
+        loginErrorTextView.setVisibility(TextView.GONE);        
         return false;
       }
     });
@@ -91,13 +108,14 @@ public class LoginActivity extends Activity {
     loginProgress.setTitle("Logging in");
     loginProgress.setIndeterminate(true);
 
-    LocalRemoteTodo.setupPersistence(this);
     
     // Attempt auto login if offline mode is set to off, otherwise work locally (go directly
     // to the todo list activity.
-    if(!LocalRemoteTodo.isOfflineMode())
+    LocalRemoteTodo.setupPersistence(this);
+    
+    if(!LocalRemoteTodo.isOfflineMode() && !loginFailed)
       attemptAutoLogin();
-    else
+    else if(LocalRemoteTodo.isOfflineMode())
       startActivity(new Intent(this, TodoListActivity.class));
   }
 

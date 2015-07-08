@@ -41,7 +41,8 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
 
   @Override
   protected void onPostExecute(Integer result) {
-    Toast.makeText(context, context.getString(result), Toast.LENGTH_LONG).show();
+    if (result != R.string.auth_failure)
+      Toast.makeText(context, context.getString(result), Toast.LENGTH_LONG).show();
 
     if (context instanceof LoginActivity) {
       LoginActivity activity = (LoginActivity) context;
@@ -55,6 +56,10 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
     switch (result) {
       case R.string.auth_success:
         context.startActivity(new Intent(context, TodoListActivity.class));
+        break;
+      case R.string.auth_failure:
+        context.startActivity(
+            new Intent(context, LoginActivity.class).putExtra("isLoginFailure", true));
         break;
       case R.string.auth_network_error:
         // Cannot contact the web service. Enable offline mode and open todo list activity.
