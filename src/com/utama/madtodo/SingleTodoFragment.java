@@ -1,7 +1,6 @@
 package com.utama.madtodo;
 
 import com.utama.madtodo.models.DbConsts;
-import com.utama.madtodo.models.DbHelper;
 import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.tasks.DeleteAsync;
 import com.utama.madtodo.tasks.SaveAsync;
@@ -30,7 +29,7 @@ public abstract class SingleTodoFragment extends Fragment implements OnClickList
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
-    DbHelper.setupPersistence(getActivity());
+    LocalRemoteTodo.setupPersistence(getActivity());
 
     if (this instanceof ActionDeleteable)
       setupDeleteDialog();

@@ -1,7 +1,6 @@
 package com.utama.madtodo;
 
 import com.utama.madtodo.models.DbConsts;
-import com.utama.madtodo.models.DbHelper;
 import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.tasks.SyncAsync;
 
@@ -28,12 +27,12 @@ public class TodoListActivity extends Activity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_todo_list);
-    DbHelper.setupPersistence(this);
+    LocalRemoteTodo.setupPersistence(this);
 
     todoListFragment =
         (TodoListFragment) getFragmentManager().findFragmentById(R.id.todoListFragment);    
     
-    if(!LocalRemoteTodo.offlineMode && !isSynchronizedOnStart) {
+    if(!LocalRemoteTodo.isOfflineMode() && !isSynchronizedOnStart) {
       isSynchronizedOnStart = true;
       new SyncAsync(this).execute();
     }

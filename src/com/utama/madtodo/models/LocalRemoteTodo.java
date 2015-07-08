@@ -1,15 +1,27 @@
 package com.utama.madtodo.models;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONException;
 
+import com.utama.madtodo.R;
+import com.utama.madtodo.SettingsActivity;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+import android.widget.Toast;
+
 
 public class LocalRemoteTodo extends TodoEntity {
 
-  public static boolean offlineMode;
+  private static boolean offlineMode;
   
   
   public LocalRemoteTodo() {
@@ -28,7 +40,12 @@ public class LocalRemoteTodo extends TodoEntity {
     return ret;
   }
 
-  
+
+  public static boolean isOfflineMode() {
+    return offlineMode;
+  }
+
+
   public static List<LocalRemoteTodo> findAll() {
     return LocalRemoteTodo.findAll(null);
   }
@@ -139,5 +156,42 @@ public class LocalRemoteTodo extends TodoEntity {
     todo.setImportant(isImportant);
     todo.setMarkedDone(isMarkedDone);
     return todo;
+  }
+
+
+  public static final boolean setupPersistence(Activity activity) {
+    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity);
+  
+    boolean offlineMode = pref.getBoolean("offlineMode", false);
+    LocalRemoteTodo.offlineMode = offlineMode;
+  
+    if (!offlineMode) {
+      try {
+        URL apiRoot = new URL(pref.getString("apiRoot", ""));
+        RemoteTodo.setApiRoot(apiRoot);
+        RemoteUser.setApiRoot(apiRoot);
+      } catch (MalformedURLException e) {
+        e.printStackTrace();
+        Toast.makeText(activity, R.string.api_root_error, Toast.LENGTH_LONG).show();
+        
+        if (activity instanceof SettingsActivity == false)
+          activity.startActivity(new Intent(activity, SettingsActivity.class));
+        
+        return false;
+      }
+    }
+  
+    LocalTodo.setDbHelper(new DbHelper(activity));
+  
+    return true;
+  }
+  
+  
+  public static final void switchToOfflineMode(Activity activity) {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+    Editor editor = prefs.edit();
+    editor.putBoolean("offlineMode", true);
+    editor.commit();
+    LocalRemoteTodo.setupPersistence(activity);    
   }
 }

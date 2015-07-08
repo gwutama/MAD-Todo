@@ -1,20 +1,9 @@
 package com.utama.madtodo.models;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
-import com.utama.madtodo.R;
-import com.utama.madtodo.SettingsActivity;
-
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -46,34 +35,6 @@ public class DbHelper extends SQLiteOpenHelper {
   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     db.execSQL("DROP TABLE IF EXISTS " + DbConsts.TABLE);
     onCreate(db);
-  }
-
-
-  public static final boolean setupPersistence(Activity activity) {
-    SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(activity);
-
-    boolean offlineMode = pref.getBoolean("offlineMode", false);
-    LocalRemoteTodo.offlineMode = offlineMode;
-
-    if (!offlineMode) {
-      try {
-        URL apiRoot = new URL(pref.getString("apiRoot", ""));
-        RemoteTodo.setApiRoot(apiRoot);
-        RemoteUser.setApiRoot(apiRoot);
-      } catch (MalformedURLException e) {
-        e.printStackTrace();
-        Toast.makeText(activity, R.string.api_root_error, Toast.LENGTH_LONG).show();
-        
-        if (activity instanceof SettingsActivity == false)
-          activity.startActivity(new Intent(activity, SettingsActivity.class));
-        
-        return false;
-      }
-    }
-
-    LocalTodo.setDbHelper(new DbHelper(activity));
-
-    return true;
   }
 
 }

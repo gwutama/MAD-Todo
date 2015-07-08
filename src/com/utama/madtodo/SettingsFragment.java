@@ -1,6 +1,6 @@
 package com.utama.madtodo;
 
-import com.utama.madtodo.models.DbHelper;
+import com.utama.madtodo.models.LocalRemoteTodo;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -72,7 +72,7 @@ public class SettingsFragment extends PreferenceFragment
 
   @Override
   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-    DbHelper.setupPersistence(getActivity());
+    LocalRemoteTodo.setupPersistence(getActivity());
 
     if (key.equals("offlineMode")) {
       setupOfflineModePreferenceDependencies();

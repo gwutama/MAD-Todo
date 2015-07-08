@@ -1,6 +1,5 @@
 package com.utama.madtodo;
 
-import com.utama.madtodo.models.DbHelper;
 import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.models.RemoteUser;
 import com.utama.madtodo.tasks.AuthAsync;
@@ -92,11 +91,11 @@ public class LoginActivity extends Activity {
     loginProgress.setTitle("Logging in");
     loginProgress.setIndeterminate(true);
 
-    DbHelper.setupPersistence(this);
+    LocalRemoteTodo.setupPersistence(this);
     
     // Attempt auto login if offline mode is set to off, otherwise work locally (go directly
     // to the todo list activity.
-    if(!LocalRemoteTodo.offlineMode)
+    if(!LocalRemoteTodo.isOfflineMode())
       attemptAutoLogin();
     else
       startActivity(new Intent(this, TodoListActivity.class));
@@ -166,7 +165,7 @@ public class LoginActivity extends Activity {
 
 
   public void attemptLogin() {
-    if (LocalRemoteTodo.offlineMode)
+    if (LocalRemoteTodo.isOfflineMode())
       return;
       
     // Reset errors.

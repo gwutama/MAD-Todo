@@ -4,7 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="app_name">MAD Todo</string>
     <string name="action_settings">Settings</string>
-    <string name="api_root_error">Invalid API root. Please correct it or set offline mode to on.</string>
+    <string name="api_root_error">Invalid API root. Offline mode has been automatically enabled.</string>
     <string name="network_error">Could not contact remote server. Changes will be saved locally.</string>
     <string name="response_error">Response error</string>
     <string name="delete_confirm">Delete this task?</string>
@@ -12,6 +12,7 @@
     <string name="delete_general_error">Error deleting task</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="offline_mode_warning">Offline mode is enabled. Changes will be saved locally. Go to settings and setup API root to change this.</string>
 
     <!-- Strings related to create -->    
     <string name="title_activity_create">New Task</string>
@@ -66,6 +67,6 @@
     <string name="auth_invalid_email"></string>
     <string name="auth_success">Login success</string>
     <string name="auth_failure">Incorrect login credentials</string>
-    <string name="auth_network_error">Invalid API root. Please correct it or enable offline mode.</string>
+    <string name="auth_network_error">Invalid API root. Offline mode has been automatically enabled.</string>
 
 </resources>

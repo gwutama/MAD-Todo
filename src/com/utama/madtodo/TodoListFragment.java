@@ -3,7 +3,7 @@ package com.utama.madtodo;
 import java.util.List;
 
 import com.utama.madtodo.models.DbConsts;
-import com.utama.madtodo.models.DbHelper;
+import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.models.LocalTodo;
 
 import android.app.ListFragment;
@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 public class TodoListFragment extends ListFragment {
@@ -20,7 +21,8 @@ public class TodoListFragment extends ListFragment {
   TodoListAdapter adapter;
   List<LocalTodo> todos;
   private String sortOrder = DbConsts.DEFAULT_SORT;
-
+  private TextView offlineModeTextView;
+  
   
   public void setSortOrder(String sortOrder) {
     this.sortOrder = sortOrder;
@@ -31,10 +33,19 @@ public class TodoListFragment extends ListFragment {
   public void onActivityCreated(Bundle savedInstanceState) {
     Log.d(TAG, "onActivityCreated");
     super.onActivityCreated(savedInstanceState);
-    DbHelper.setupPersistence(getActivity());
+    LocalRemoteTodo.setupPersistence(getActivity());
     todos = LocalTodo.findAll(sortOrder);
     adapter = new TodoListAdapter(getActivity(), todos);
     setListAdapter(adapter);
+    
+    offlineModeTextView = (TextView) getActivity().findViewById(R.id.offlineModeTextView);
+    offlineModeTextView.setBackgroundColor(0xFF000000);
+    offlineModeTextView.setTextColor(0xFFFFFFFF);
+    
+    if (LocalRemoteTodo.isOfflineMode())
+      offlineModeTextView.setVisibility(TextView.VISIBLE);
+    else
+      offlineModeTextView.setVisibility(TextView.GONE);
   }
 
   
