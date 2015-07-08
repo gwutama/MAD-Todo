@@ -23,6 +23,7 @@ public class SyncAsync extends AsyncTask<Void, Void, Integer> {
 
 
   public SyncAsync(Context context) {
+    super();
     this.context = context;
   }
 

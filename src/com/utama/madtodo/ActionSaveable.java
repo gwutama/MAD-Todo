@@ -1,5 +1,5 @@
 package com.utama.madtodo;
 
-public interface ActionSaveable {
+interface ActionSaveable {
 
 }

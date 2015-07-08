@@ -5,43 +5,40 @@ import java.util.Date;
 
 import com.utama.madtodo.models.LocalTodo;
 
+import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-public class DetailsFragment extends SingleTodoFragment
-    implements ViewUpdateable, ActionEditable, ActionDeleteable {
+public class DetailsFragment extends Fragment implements ViewUpdateable {
 
-  private TextView nameTextView;
-  private TextView descriptionTextView;
-  private TextView expiryTextView;
-  private TextView isImportantTextView;
-  private TextView isDoneTextView;
+  protected TextView nameTextView;
+  protected TextView descriptionTextView;
+  protected TextView expiryTextView;
+  protected TextView isImportantTextView;
+  protected TextView isDoneTextView;
 
 
   @Override
-  protected View inflateFragment(LayoutInflater inflater, ViewGroup container) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_details, container);
-    return view;
-  }
 
-
-  @Override
-  protected void setupView(View view) {
     nameTextView = (TextView) view.findViewById(R.id.nameTextView);
     descriptionTextView = (TextView) view.findViewById(R.id.descriptionTextView);
     expiryTextView = (TextView) view.findViewById(R.id.listItemExpiryTextView);
     isImportantTextView = (TextView) view.findViewById(R.id.isImportantTextView);
     isDoneTextView = (TextView) view.findViewById(R.id.isDoneTextView);
+
+    return view;
   }
 
 
   @Override
   public void updateView(long id) {
-    super.updateView(id);
-
     if (id != -1) {
       LocalTodo todo = LocalTodo.findOne(id);
 

@@ -86,10 +86,13 @@ public class RemoteTodo extends TodoEntity {
     List<RemoteTodo> todos;
 
     try {
-      rest.setPath(RESOURCE_PATH);      
+      rest.setPath(RESOURCE_PATH);
       rest.open();
       String resp = rest.read();
       todos = buildEntities(resp);
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+      throw new IOException("Network error. Malformed API root or resource path?");
     } finally {
       rest.close();
     }
@@ -139,10 +142,13 @@ public class RemoteTodo extends TodoEntity {
     SimpleRestClient rest = new SimpleRestClient(apiRoot, "POST");
 
     try {
-      rest.setPath(RESOURCE_PATH);      
+      rest.setPath(RESOURCE_PATH);
       rest.open();
       rest.write(buildRequestPayload());
       setFromJsonObject(rest.readJson());
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+      throw new IOException("Network error. Malformed API root or resource path?");      
     } finally {
       rest.close();
     }
@@ -159,10 +165,13 @@ public class RemoteTodo extends TodoEntity {
     SimpleRestClient rest = new SimpleRestClient(apiRoot, "PUT");
 
     try {
-      rest.setPath(RESOURCE_PATH);      
+      rest.setPath(RESOURCE_PATH);
       rest.open();
       rest.write(buildRequestPayload());
       setFromJsonObject(rest.readJson());
+    } catch (MalformedURLException e) {
+      e.printStackTrace();
+      throw new IOException("Network error. Malformed API root or resource path?");      
     } finally {
       rest.close();
     }
@@ -206,7 +215,7 @@ public class RemoteTodo extends TodoEntity {
 
   private JSONObject buildRequestPayload() {
     JSONObject payload = new JSONObject();
-    
+
     try {
       payload.put("id", remoteId);
       payload.put("name", name);
@@ -215,7 +224,7 @@ public class RemoteTodo extends TodoEntity {
     } catch (JSONException e) {
       e.printStackTrace();
     }
-    
+
     return payload;
   }
 

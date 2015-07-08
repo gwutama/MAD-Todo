@@ -1,6 +1,6 @@
 package com.utama.madtodo;
 
-public interface ViewUpdateable {
+interface ViewUpdateable {
 
   void updateView(long id);
   

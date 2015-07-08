@@ -7,6 +7,7 @@ import java.util.Date;
 import com.utama.madtodo.models.LocalRemoteTodo;
 
 import android.app.DatePickerDialog;
+import android.app.Fragment;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
@@ -22,7 +23,7 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 
 
-public class CreateFragment extends SingleTodoFragment implements ActionSaveable {
+public class CreateFragment extends Fragment {
 
   protected EditText nameEditText;
   protected EditText descriptionEditText;
@@ -36,28 +37,10 @@ public class CreateFragment extends SingleTodoFragment implements ActionSaveable
 
 
   @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);    
-    setupDateTimeDialogs();
-  }
-
-
-  @Override
-  public void onResume() {
-    super.onResume();
-    expiry = Calendar.getInstance();
-  }
-
-  
-  @Override  
-  protected View inflateFragment(LayoutInflater inflater, ViewGroup container) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_create, container);
-    return view;
-  }
-  
-  
-  @Override  
-  protected void setupView(View view) {
+    
     nameEditText = (EditText) view.findViewById(R.id.nameEditText);
     descriptionEditText = (EditText) view.findViewById(R.id.descriptionEditText);
     expiryDateEditText = (EditText) view.findViewById(R.id.expiryDateEditText);
@@ -77,6 +60,17 @@ public class CreateFragment extends SingleTodoFragment implements ActionSaveable
         expiryTimePickerDialog.show();
       }
     });    
+
+    setupDateTimeDialogs();    
+    
+    return view;
+  }  
+
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    expiry = Calendar.getInstance();
   }
 
   
@@ -104,10 +98,9 @@ public class CreateFragment extends SingleTodoFragment implements ActionSaveable
       }
     }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true);
   }
-
   
-  @Override
-  protected LocalRemoteTodo buildTodo() {
+  
+  public LocalRemoteTodo buildTodo() {
     LocalRemoteTodo todo = new LocalRemoteTodo();
     todo.setName(nameEditText.getText().toString());
     todo.setDescription(descriptionEditText.getText().toString());
