@@ -39,7 +39,7 @@ public class TodoListFragment extends ListFragment {
     setListAdapter(adapter);
     
     offlineModeTextView = (TextView) getActivity().findViewById(R.id.offlineModeTextView);
-    offlineModeTextView.setBackgroundColor(0xFF000000);
+    offlineModeTextView.setBackgroundColor(0xFFDD792E);
     offlineModeTextView.setTextColor(0xFFFFFFFF);
     
     if (LocalRemoteTodo.isOfflineMode())

@@ -54,7 +54,7 @@ public class LoginActivity extends Activity {
 
     // Login error warning notification
     loginErrorTextView = (TextView) findViewById(R.id.loginErrorTextView);
-    loginErrorTextView.setBackgroundColor(0xFFD43B0D);
+    loginErrorTextView.setBackgroundColor(0xFFDD792E);
     loginErrorTextView.setTextColor(0xFFFFFFFF);
     loginErrorTextView.setVisibility(TextView.GONE);
 
