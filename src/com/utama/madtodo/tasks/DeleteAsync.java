@@ -37,6 +37,9 @@ public final class DeleteAsync extends AsyncTask<Long, Void, Integer> {
         return R.string.delete_success;
       else
         return R.string.delete_general_error;
+    } catch (IllegalArgumentException e) {
+      e.printStackTrace();
+      return R.string.delete_invalid_id_error;      
     } catch (IOException e) {
       e.printStackTrace();
       return R.string.network_error;

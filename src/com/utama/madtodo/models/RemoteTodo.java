@@ -116,6 +116,9 @@ public class RemoteTodo extends TodoEntity {
 
 
   public static RemoteTodo findOne(long remoteId) throws IOException, JSONException {
+    if (remoteId < 0)
+      throw new IllegalArgumentException("Invalid id");
+    
     SimpleRestClient rest = new SimpleRestClient(apiRoot, "GET");
     RemoteTodo todo = null;
 
@@ -182,6 +185,9 @@ public class RemoteTodo extends TodoEntity {
 
   @Override
   public long delete() throws IOException {
+    if (remoteId < 0)
+      throw new IllegalArgumentException("Invalid id");
+    
     SimpleRestClient rest = new SimpleRestClient(apiRoot, "DELETE");
     String response;
 

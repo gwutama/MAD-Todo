@@ -46,6 +46,9 @@ public class LocalTodo extends TodoEntity {
 
 
   public static LocalTodo findOne(long id) {
+    if (id < 0)
+      throw new IllegalArgumentException("Invalid id");
+    
     Cursor cursor = queryOne(id);
 
     if (cursor.getCount() == 0)
@@ -116,6 +119,9 @@ public class LocalTodo extends TodoEntity {
 
   @Override
   protected long create() {
+    if (TextUtils.isEmpty(name))
+      throw new IllegalArgumentException("Task name cannot be empty");
+    
     ContentValues values = buildValues();
     values.remove(DbConsts.Column.ID); // because of AUTO INCREMENT property of _id field.
     long rowId = create(values);
@@ -141,6 +147,9 @@ public class LocalTodo extends TodoEntity {
 
   @Override
   protected long update() {
+    if (TextUtils.isEmpty(name))
+      throw new IllegalArgumentException("Task name cannot be empty");
+    
     ContentValues values = buildValues();
     long rowId = update(id, values);
     id = rowId;
@@ -165,6 +174,9 @@ public class LocalTodo extends TodoEntity {
 
   @Override
   public long delete() {
+    if (id < 0)
+      throw new IllegalArgumentException("Invalid id");
+    
     long count = delete(id);
     return count;
   }
