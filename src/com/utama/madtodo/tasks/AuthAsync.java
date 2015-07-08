@@ -4,13 +4,17 @@ import java.io.IOException;
 
 import com.utama.madtodo.LoginActivity;
 import com.utama.madtodo.R;
-import com.utama.madtodo.SettingsActivity;
 import com.utama.madtodo.TodoListActivity;
+import com.utama.madtodo.models.DbHelper;
 import com.utama.madtodo.models.RemoteUser;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.widget.Toast;
 
 
@@ -56,7 +60,13 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
         context.startActivity(new Intent(context, TodoListActivity.class));
         break;
       case R.string.auth_network_error:
-        context.startActivity(new Intent(context, SettingsActivity.class));
+        // Cannot contact the web service. Enable offline mode and open todo list activity.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        Editor editor = prefs.edit();
+        editor.putBoolean("offlineMode", true);
+        editor.commit();
+        DbHelper.setupPersistence((Activity) context);
+        context.startActivity(new Intent(context, TodoListActivity.class));
         break;
     }
   }
