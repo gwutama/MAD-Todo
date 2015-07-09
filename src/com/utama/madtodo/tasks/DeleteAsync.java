@@ -50,8 +50,8 @@ public final class DeleteAsync extends AsyncTask<Long, Void, Integer> {
     LocalRemoteTodo todo = LocalRemoteTodo.findOne(id);
 
     try {
-      long count = todo.delete();
-      if (todo != null && count > 0)
+      long deletedId = todo.delete();
+      if (todo != null && deletedId > -1)
         return R.string.delete_success;
       else
         return R.string.delete_general_error;

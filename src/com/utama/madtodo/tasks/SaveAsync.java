@@ -55,7 +55,7 @@ public class SaveAsync extends AsyncTask<LocalRemoteTodo, Void, Integer> {
     try {
       LocalRemoteTodo todo = params[0];
 
-      if (todo.save() > 0)
+      if (todo.save() > -1)
         return R.string.edit_success;
       else
         return R.string.edit_general_error;
