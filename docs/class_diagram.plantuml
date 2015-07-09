@@ -1,0 +1,523 @@
+@startuml
+
+
+' *****************************************************************************
+'
+' BASIC CONFIGS
+'
+' *****************************************************************************
+
+skinparam classAttributeIconSize 0
+hide circle
+hide empty members
+hide empty fields
+hide empty methods
+scale 8000 width
+
+
+
+' *****************************************************************************
+'
+' ANDROID CLASSES AND INTERFACES
+'
+' *****************************************************************************
+
+namespace android.app {
+	class Activity			
+	class ListFragment
+	class Fragment		
+}
+
+namespace android.content.SharedPreferences {
+	interface OnSharedPreferenceChangeListener <<interface>>
+}
+
+namespace android.content.DialogInterface {
+	interface OnClickListener <<interface>>
+}
+
+namespace android.preference	{
+	abstract class PreferenceFragment <<abstract>>
+}
+	
+namespace android.widget {
+	class ArrayAdapter
+}
+
+namespace android.os {
+	class AsyncTask
+}
+
+namespace android.database.sqlite {
+	abstract class SQLiteOpenHelper <<abstract>>
+}
+
+
+
+' *****************************************************************************
+'
+' PROJECT CLASSES AND INTERFACES
+'
+' *****************************************************************************
+
+namespace com.utama.madtodo.fragments {
+
+	' -------------------------------------------------------------------------
+	' FRAGMENTS
+	' -------------------------------------------------------------------------
+	
+	interface ViewUpdateable <<interface>>
+
+	class CreateFragment {
+		#nameEditText : EditText
+		#descriptionEditText : EditText
+		#expiryDateEditText : EditText 
+		#expiryTimeEditText : EditText
+		#expiryDatePickerDialog : DatePickerDialog
+		#expiryTimePickerDialog : TimePickerDialog
+		#isImportantCheckBox : CheckBox
+		#expiry : Calendar
+		+onCreateView(inflater : LayoutInflater, container : ViewGroup, savedInstanceState : Bundle) : View
+		+onResume() : void
+		#setupDateTimeDialogs() : void
+		+buildTodo() : LocalRemoteTodo
+		#buildExpiry(String expiryDateString) : Date
+	}
+	
+	class DetailsFragment {
+		#nameTextView : TextView
+		#descriptionTextView : TextView
+		#expiryTextView : TextView
+		#isImportantTextView : TextView
+		#isDoneTextView : TextView
+		+onCreateView(inflater : LayoutInflater, container : ViewGroup, savedInstanceState : Bundle) : View
+		+updateView(id : long) : void
+	}
+	
+	class EditFragment {
+		-isDoneCheckBox : CheckBox
+		+onCreateView(inflater : LayoutInflater, container : ViewGroup, savedInstanceState : Bundle) : View
+		+updateView(id : long) : void
+		+buildTodo() : LocalRemoteTodo
+	}
+	
+	class SettingsFragment {
+		-prefs : SharedPreferences
+		~prefsScreen : PreferenceScreen
+		-email : Preference
+		-password : Preference
+		-offlineMode : Preference
+		-apiRoot : Preference
+		-forgetCredentials : Preference
+		+onCreate(Bundle savedInstanceState) : void
+		~setupOfflineModePreferenceDependencies() : void
+		+onSharedPreferenceChanged(sharedPreferences : SharedPreferences, key : String) : void
+	}		
+	
+	class TodoListFragment {
+		~adapter : TodoListAdapter
+		~todos : List<LocalTodo>
+		-sortOrder : String
+		-offlineModeTextView : TextView
+		+setSortOrder(String sortOrder) : void
+		+onActivityCreated(savedInstanceState : Bundle) : void
+		+forceRefreshList() : void
+		+onListItemClick(l : ListView, v : View, position : int, id : long) : void
+	}	
+	
+	class TodoListAdapter {
+		+TodoListAdapter(context : Context, todos : List<LocalTodo>)
+		+getView(position : int, convertView : View, parent : ViewGroup) : View
+	}	
+	
+}
+
+
+namespace com.utama.madtodo.activities {	
+
+	' -------------------------------------------------------------------------
+	' ACTIVITIES
+	' -------------------------------------------------------------------------	
+	
+	interface ActionDeleteable <<interface>>
+	interface ActionEditable <<interface>>
+	interface ActionSaveable <<interface>>
+
+	class CreateActivity {
+		~createFragment : CreateFragment
+		+onBackPressed() : void
+		#onCreate(savedInstanceState : Bundle) : void 
+		+onOptionsItemSelected(item : MenuItem) : boolean
+	}
+	
+	class DetailsActivity {
+		~detailsFragment : DetailsFragment
+		+onBackPressed() : void
+		#onCreate(Bundle savedInstanceState) : void
+		#onResume() : void
+	}
+	
+	class EditActivity {
+		~editFragment : EditFragment
+		+onBackPressed() : void
+		#onCreate(savedInstanceState : Bundle) : void
+		#onResume() : void
+		+onOptionsItemSelected(item : MenuItem) : boolean
+	}
+	
+	class LoginActivity {
+		-emailText : AutoCompleteTextView
+		-passwordText : EditText
+		-signInButton : Button
+		-user : RemoteUser
+		-loginProgress : ProgressDialog
+		-testConnectionProgress : ProgressDialog
+		-loginErrorTextView : TextView
+		-loginFailed : Boolean
+		+onBackPressed() : void
+		#onCreate(savedInstanceState : Bundle) : void
+		#onResume() : void
+		+attemptAutoLogin() : void
+		-fillInEmailPasswordFieldsFromPreferences() : void
+		+onCreateOptionsMenu(menu : Menu) : boolean
+		+onOptionsItemSelected(item : MenuItem) : boolean
+		-enableDisableSignInButton() : void
+		-attemptLogin() : void
+		-saveUserCredentialsInPreferences(email : String, password : String) : void
+		+showLoginProgress(show : boolean) : void
+		+showTestConnectionProgress(show : boolean) : void
+		+getLoginFailed() : Boolean
+		+setLoginFailed(loginFailed : Boolean) : void
+	}
+	
+	class SettingsActivity {
+		+onBackPressed() : void
+		#onCreate(savedInstanceState : Bundle) : void
+	}
+	
+	abstract class SingleTodoActivity <<abstract>> {
+		#deleteDialog : AlertDialog.Builder
+		#activeTodoId : long
+		#onCreate(Bundle savedInstanceState) : void
+		-setupDeleteDialog() : void
+		#onResume() : void
+		+onCreateOptionsMenu(menu : Menu) : boolean
+		+onOptionsItemSelected(item : MenuItem) : boolean
+		+onClick(dialog : DialogInterface, which : int) : void
+	}
+	
+	class TodoListActivity {
+		-{static}isSynchronizedOnStart : boolean
+		-todoListFragment : TodoListFragment
+		+onBackPressed() : void
+		#onCreate(savedInstanceState : Bundle) : void
+		+onCreateOptionsMenu(menu : Menu) : boolean
+		+onOptionsItemSelected(item : MenuItem) : boolean
+	}
+		
+}
+
+
+namespace com.utama.madtodo.models {
+
+	' -------------------------------------------------------------------------
+	' MODELS
+	' -------------------------------------------------------------------------
+
+	class DbConsts {
+		+{static}String DB_NAME
+		+{static}int DB_VERSION
+		+{static}String TABLE
+		+{static}String SORT_IMPORTANCE_DATE
+		+{static}String SORT_DATE_IMPORTANCE
+		+{static}String DEFAULT_SORT
+	}	
+	
+	class DbHelper {
+		+DbHelper(context : Context)
+		+onCreate(db : SQLiteDatabase) : void
+		+onUpgrade(db : SQLiteDatabase, oldVersion : int, newVersion : int) : void
+	}
+	
+	class LocalRemoteTodo {
+		-{static}boolean offlineMode
+		+LocalRemoteTodo()
+		+LocalRemoteTodo(todo : TodoEntity)
+		+{static}LocalRemoteTodo findOne(id : long)
+		+{static}boolean isOfflineMode()
+		+{static}List<LocalRemoteTodo> findAll()
+		+{static}List<LocalRemoteTodo> findAll(sortOrder : String)
+		#create() : long
+		#update() : long
+		+delete() : long
+		+{static}sync() : void
+		-buildLocalTodo() : LocalTodo
+		+{static}setupPersistence(activity : Activity) : boolean
+		+{static}switchToOfflineMode(activity : Activity) : void
+		+{static}switchToOnlineMode(activity : Activity) : void
+	}
+	
+	class LocalTodo {
+		-{static}dbHelper : DbHelper
+		+LocalTodo()
+		+LocalTodo(cursor : Cursor)
+		+LocalTodo(todo : TodoEntity)
+		+{static}getDbHelper() : DbHelper
+		+{static}setDbHelper(persistance : DbHelper) : void
+		+{static}findOne(id : long) : LocalTodo
+		-{static}queryOne(id : long) : Cursor
+		+{static}findAll() : List<LocalTodo>
+		+{static}findAll(sortOrder : String) : List<LocalTodo>
+		-{static}queryAll(sortOrder : String) : Cursor
+		#create() : long
+		-create(values : ContentValues) : long
+		#update() : long
+		-update(id : long, values : ContentValues) : int
+		+delete() : long
+		-delete(id : long) : long
+		+{static}long purge() : long
+		-buildValues() : ContentValues
+		+setFromCursor(cur : Cursor) : void
+	}
+		
+	class RemoteTodo {
+		-{static}RESOURCE_PATH : String
+		-{static}apiRoot : URL
+		+RemoteTodo()
+		+RemoteTodo(todo : TodoEntity)
+		+RemoteTodo(json : String)
+		+RemoteTodo(obj : JSONObject)
+		-setFromJsonObject(obj : JSONObject) : void
+		+{static}getApiRoot() : URL
+		+{static}setApiRoot(URL apiRoot) : void
+		+{static}findAll() : List<RemoteTodo>
+		-{static}buildEntities(String json) : List<RemoteTodo>
+		+{static}findOne(long remoteId) : RemoteTodo
+		#create() : long
+		#update() : long
+		+delete() : long
+		+{static}purge() : long
+		-buildRequestPayload() : JSONObject
+	}
+	
+	class RemoteUser {
+		-email : String
+		-password : String
+		-{static} RESOURCE_PATH : String
+		-{static}apiRoot : URL
+		-{static}PASSWORD_MIN_LENGTH : int
+		-{static}PASSWORD_MAX_LENGTH : int
+		-{static}EMAIL_ADDRESS_REGEX : Pattern
+		+{static}getApiRoot() : URL
+		+{static}setApiRoot(apiRoot : URL) : void
+		+getEmail() : String
+		+setEmail(user : String) : void
+		+getPassword() : String
+		+setPassword(password : String) : void
+		+RemoteUser()
+		+RemoteUser(remoteUser : RemoteUser)
+		+isEmailValid(String email) : boolean
+		+isPasswordValid(String password) : boolean
+		+auth() : boolean
+		-buildRequestPayload() : JSONObject
+	}	
+	
+	abstract class TodoEntity <<abstract>> {
+		#id : long
+		#remoteId : long 
+		#name : String 
+		#description : String 
+		#expiry : Date
+		#isImportant : Boolean
+		#isMarkedDone : Boolean
+		+TodoEntity()
+		+TodoEntity(todo : TodoEntity)
+		+setTodo(todo : TodoEntity) : void
+		+getId() : long
+		+setId(id : long) : void
+		+getRemoteId() : long
+		+setRemoteId(remoteId : long) : void
+		+getName() : String
+		+setName(name : String) : void
+		+getDescription() : String
+		+setDescription(description : String) : void
+		+getExpiry() : Date
+		+setExpiry(expiry : Date) : void
+		+isImportant() : Boolean
+		+setImportant(isImportant : Boolean) : void
+		+isMarkedDone() : Boolean
+		+setMarkedDone(isMarkedDone : Boolean)
+		#{abstract}create() : long
+		#{abstract}update() : long
+		+{abstract}delete() : long
+		+save() : long
+		+toString() : String
+	}	
+}
+
+
+
+namespace com.utama.madtodo.tasks {
+
+	' -------------------------------------------------------------------------
+	' ASYNC TASKS
+	' -------------------------------------------------------------------------
+
+	class AuthAsync {
+		-context : Context 
+		-user : RemoteUser
+		+AuthAsync(Context context, RemoteUser user)
+		#doInBackground(params : Void[]) : Integer
+		#onPostExecute(result : Integer) : void
+		#onCancelled() : void
+	}
+
+	class DeleteAsync {
+		-context : Context 
+		+DeleteAsync(context : Context)
+		#doInBackground(params : Long[]) : Integer
+		#onPostExecute(result : Integer) : void
+	}
+	
+	class SaveAsync {
+		#context : Context
+		+SaveAsync(context : Context)
+		#doInBackground(params : LocalRemoteTodo[]) : Integer
+		#onPostExecute(result : Integer) : void
+	}
+	
+	class SyncAsync {
+		-context : Context
+		+SyncAsync(context : Context)
+		#doInBackground(params : Void[]) : Integer
+		#onPreExecute() : void
+		#onPostExecute(result : Integer) : void
+	}
+
+	class TestConnectionAsync {
+		~context : Context
+		+TestConnectionAsync(context : Context)
+		#doInBackground(params : Void[]) : Boolean
+		#onPostExecute(canContactWebService : Boolean) : void
+	}
+	
+	class UpdateImportanceAsync {
+		+UpdateImportanceAsync(context : Context)
+		#onPostExecute(result : Integer) : void
+	}
+	
+	class UpdateMarkedDoneAsync {
+		+UpdateMarkedDoneAsync(context : Context)
+		#onPostExecute(result : Integer) : void
+	}
+	
+}
+
+
+
+namespace com.utama.madotodo.utils {
+
+	' -------------------------------------------------------------------------
+	' UTILITIES
+	' -------------------------------------------------------------------------
+
+	class SimpleRestClient {
+		-HttpURLConnection conn
+		-URL apiRoot
+		-URL resourceUrl
+		-String requestMethod
+		-{static}int CONNECT_TIMEOUT_MS
+		+SimpleRestClient(apiRoot : URL, requestMethod : String)
+		+setPath(path : String) : void
+		+open() : void
+		+close() : void
+		+read() : String
+		+readJson() : JSONObject
+		+write(body : String) : void
+		+write(body : JSONObject) : void
+	}
+	
+}
+
+
+
+' *****************************************************************************
+'
+' RELATIONSHIPS
+'
+' *****************************************************************************
+
+namespace com.utama.madtodo.activities {
+	
+	' -------------------------------------------------------------------------
+	' ACTIVITIES
+	' -------------------------------------------------------------------------
+
+	SingleTodoActivity <|-- CreateActivity
+	ActionSaveable <|.. CreateActivity	
+	SingleTodoActivity <|-- DetailsActivity
+	ActionEditable <|.. DetailsActivity
+	ActionDeleteable <|.. DetailsActivity
+	CreateActivity <|-- EditActivity
+	ActionSaveable <|.. EditActivity
+	ActionDeleteable <|.. EditActivity
+
+	android.app.Activity <|-- LoginActivity
+	android.app.Activity <|-- SettingsActivity
+	android.app.Activity <|-- SingleTodoActivity
+	android.content.DialogInterface.OnClickListener <|.. SingleTodoActivity
+	android.app.Activity <|-- TodoListActivity
+		
+}
+
+
+namespace com.utama.madtodo.fragments {
+
+	' -------------------------------------------------------------------------
+	' FRAGMENTS
+	' -------------------------------------------------------------------------
+
+	ViewUpdateable <|.. DetailsFragment
+	CreateFragment <|-- EditFragment
+
+	android.app.Fragment <|-- CreateFragment
+	android.app.Fragment <|-- DetailsFragment	
+	android.preference.PreferenceFragment <|-- SettingsFragment
+	android.content.SharedPreferences.OnSharedPreferenceChangeListener <|.. SettingsFragment
+	android.widget.ArrayAdapter <|-- TodoListAdapter
+	android.app.ListFragment <|-- TodoListFragment
+
+}
+
+
+namespace com.utama.madtodo.models {
+
+	' -------------------------------------------------------------------------
+	' MODELS
+	' -------------------------------------------------------------------------
+
+	android.database.sqlite.SQLiteOpenHelper <|-- DbHelper		
+	TodoEntity <|-- LocalRemoteTodo		
+	TodoEntity <|-- LocalTodo		
+	TodoEntity <|-- RemoteTodo	
+
+}
+
+
+namespace com.utama.madtodo.tasks {
+
+	' -------------------------------------------------------------------------
+	' ASYNC TASKS
+	' -------------------------------------------------------------------------
+		
+	android.os.AsyncTask <|-- AuthAsync
+	android.os.AsyncTask <|-- DeleteAsync	
+	android.os.AsyncTask <|-- SaveAsync		
+	android.os.AsyncTask <|-- SyncAsync		
+	android.os.AsyncTask <|-- TestConnectionAsync		
+	SaveAsync <|-- UpdateImportanceAsync	
+	SaveAsync <|-- UpdateMarkedDoneAsync	
+}
+
+
+@enduml
