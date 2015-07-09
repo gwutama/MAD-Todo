@@ -14,16 +14,32 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
 
+/**
+ * The Class TestConnectionAsync represents an asynchronous operation for testing connection
+ * with the web service.
+ */
 public class TestConnectionAsync extends AsyncTask<Void, Void, Boolean> {
 
+  /** The context. This can be an activity or fragment. */
   Context context;
 
 
+  /**
+   * Instantiates a new test connection async.
+   *
+   * @param context The context. This can be an activity or fragment.
+   */
   public TestConnectionAsync(Context context) {
     this.context = context;
   }
 
 
+  /**
+   * The actual operation that runs in background. This will try to connect with the web service
+   * and returns various message on different results.
+   * 
+   * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+   */
   @Override
   protected Boolean doInBackground(Void... params) {
     SimpleRestClient rest = null;
@@ -45,6 +61,15 @@ public class TestConnectionAsync extends AsyncTask<Void, Void, Boolean> {
   }
 
 
+  /**
+   * After the execution ends, the login progress bar (from the {@link LoginActivity}) 
+   * will be shown. If the app has connection with the remote web service, it will try to
+   * automatically logs in the user (the email and password are retrieved from the app
+   * preferences). Otherwise, it means that the app does not have connection with the remote
+   * web service. In this case, enable the offline mode and start the {@link TodoListActivity}.
+   * 
+   * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+   */
   @Override
   protected void onPostExecute(Boolean canContactWebService) {
     super.onPostExecute(canContactWebService);    

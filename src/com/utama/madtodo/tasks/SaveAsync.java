@@ -15,18 +15,39 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+/**
+ * The Class SaveAsync represents an asynchronous operation for saving (creating new and updating
+ * existing) both local and remote todo tasks.
+ * 
+ * If the passed id {@link LocalRemoteTodo} instance is not set or if it equals to -1, then
+ * the data will be created. Otherwise the data will be saved.
+ */
 public class SaveAsync extends AsyncTask<LocalRemoteTodo, Void, Integer> {
 
+  /** For debugging purposes. */
   private static final String TAG = "CreateTask";
+  
+  /** The context. This can be an activity or fragment. */
   protected final Context context;
 
 
+  /**
+   * Instantiates a new save async.
+   *
+   * @param context The context. This can be an activity or fragment.
+   */
   public SaveAsync(Context context) {
     super();
     this.context = context;
   }
 
 
+  /**
+   * The actual operation that runs in background. This will either create or update existing
+   * local and remote todo tasks.
+   * 
+   * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+   */
   @Override
   protected Integer doInBackground(LocalRemoteTodo... params) {
     Log.d(TAG, "doInBackground");
@@ -51,6 +72,12 @@ public class SaveAsync extends AsyncTask<LocalRemoteTodo, Void, Integer> {
   }
 
 
+  /**
+   * After the execution ends, a toast notification message will be shown. Finally the user will
+   * be redirected to the {@link TodoListActivity} activity on success.
+   * 
+   * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+   */
   @Override
   protected void onPostExecute(Integer result) {
     super.onPostExecute(result);

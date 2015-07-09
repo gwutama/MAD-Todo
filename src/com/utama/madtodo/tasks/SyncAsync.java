@@ -16,18 +16,34 @@ import android.util.Log;
 import android.widget.Toast;
 
 
+/**
+ * The Class SyncAsync represents an asynchronous task for synchronizinng local and remote data.
+ */
 public class SyncAsync extends AsyncTask<Void, Void, Integer> {
 
+  /** For debugging purposes. */
   private static final String TAG = "SyncAsync";
+  
+  /** The context. This can be an activity or fragment. */
   private final Context context;
 
 
+  /**
+   * Instantiates a new sync async.
+   *
+   * @param context The context. This can be an activity or fragment.
+   */
   public SyncAsync(Context context) {
     super();
     this.context = context;
   }
 
 
+  /**
+   * The actual application that runs in background. This will synchronize local and remote data.
+   * 
+   * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+   */
   @Override
   protected Integer doInBackground(Void... params) {
     Log.d(TAG, "SyncAsync.doInBackground");
@@ -45,6 +61,12 @@ public class SyncAsync extends AsyncTask<Void, Void, Integer> {
   }
 
 
+  /**
+   * Before executing the lengthy operation, make sure that a toast notification is displayed 
+   * ("syncing with server" or some sort).
+   * 
+   * @see android.os.AsyncTask#onPreExecute()
+   */
   @Override
   protected void onPreExecute() {
     super.onPreExecute();
@@ -52,6 +74,14 @@ public class SyncAsync extends AsyncTask<Void, Void, Integer> {
   }
 
 
+  /**
+   * After the execution ends, display a toast notification message. On a successful or failure
+   * sync, make sure that the todo list gets refreshed. On a failure sync, the local data will
+   * not be rolled back. Thus it still make sense to refresh the list since the local data
+   * has been deleted anyway.
+   * 
+   * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+   */
   @Override
   protected void onPostExecute(Integer result) {
     super.onPostExecute(result);

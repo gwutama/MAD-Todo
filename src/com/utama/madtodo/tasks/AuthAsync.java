@@ -15,12 +15,25 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 
+/**
+ * The Class AuthAsync represents an asynchronous operation for authenticating user with the remote
+ * web service.
+ */
 public class AuthAsync extends AsyncTask<Void, Void, Integer> {
 
+  /** The context. This can be an activity or fragment. */
   private final Context context;
+
+  /** The user instance to authenticate. */
   private final RemoteUser user;
 
 
+  /**
+   * Instantiates a new auth async.
+   *
+   * @param context The context. This can be an activity or fragment.
+   * @param user The user instance to authenticate.
+   */
   public AuthAsync(Context context, RemoteUser user) {
     super();
     this.context = context;
@@ -28,6 +41,12 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
   }
 
 
+  /**
+   * The actual operation that runs in background. This will authenticate user with the remote
+   * web service.
+   * 
+   * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+   */
   @Override
   protected Integer doInBackground(Void... params) {
     try {
@@ -39,6 +58,18 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
   }
 
 
+  /**
+   * After the execution ends, all toast messages (login success or network error) will be shown 
+   * except when the authentication fails. In that case, the user will be redirected to the
+   * {@link LoginActivity} back, where a much clearer error message will be shown.
+   * 
+   * On a successful authentication, the user will be redirected to the {@link TodoListActivity}.
+   * 
+   * If a network error occurs, the app will try to enable the offline mode. The user will then
+   * be redirected to {@link TodoListActivity} and from then on, the application will work locally.
+   * 
+   * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+   */
   @Override
   protected void onPostExecute(Integer result) {
     if (result != R.string.auth_failure)
@@ -70,6 +101,12 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
   }
 
 
+  /**
+   * Mak sure that the login progress in LoginActivity is closed. This should not happen
+   * since the user cannot cancel the operation anyway.
+   * 
+   * @see android.os.AsyncTask#onCancelled()
+   */
   @Override
   protected void onCancelled() {
     if (context instanceof LoginActivity)
