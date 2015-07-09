@@ -8,9 +8,8 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 
-// TODO: Auto-generated Javadoc
 /**
- * The Class EditActivity.
+ * The Class EditActivity represents an activity for editing a task.
  */
 public class EditActivity extends CreateActivity implements ActionSaveable, ActionDeleteable {
 
@@ -18,8 +17,10 @@ public class EditActivity extends CreateActivity implements ActionSaveable, Acti
   EditFragment editFragment;
 
 
-  /* (non-Javadoc)
-   * @see com.utama.madtodo.CreateActivity#onBackPressed()
+  /**
+   * The implementation is to close the activity on back button press.
+   * 
+   * @see android.app.Activity#onBackPressed()
    */
   @Override
   public void onBackPressed() {
@@ -27,7 +28,9 @@ public class EditActivity extends CreateActivity implements ActionSaveable, Acti
   }
 
 
-  /* (non-Javadoc)
+  /**
+   * Inflates activity_edit.xml and sets up {@link com.utama.madtodo.fragments.EditFragment}
+   * 
    * @see com.utama.madtodo.CreateActivity#onCreate(android.os.Bundle)
    */
   @Override
@@ -37,7 +40,7 @@ public class EditActivity extends CreateActivity implements ActionSaveable, Acti
     editFragment = (EditFragment) getFragmentManager().findFragmentById(R.id.editFragment);
   }
 
-
+ 
   /**
    * Update edit fragment with a data. The activity retrieves an id (activeTodoId) that was
    * set somewhere else using putExtras(DbConsts.Columns.id, ...).
@@ -51,7 +54,10 @@ public class EditActivity extends CreateActivity implements ActionSaveable, Acti
   }
 
 
-  /* (non-Javadoc)
+  /**
+   * This method does nothing other than executing {@link com.utama.madtodo.tasks.SaveAsync}
+   * on save button click.
+   * 
    * @see com.utama.madtodo.CreateActivity#onOptionsItemSelected(android.view.MenuItem)
    */
   @Override

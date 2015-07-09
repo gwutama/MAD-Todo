@@ -7,13 +7,19 @@ import android.content.Intent;
 import android.os.Bundle;
 
 
+/**
+ * The Class SettingsActivity represents an activity for modifying app preferences.
+ */
 public class SettingsActivity extends Activity {
 
+  /**
+   * Try to re-login on back button click if offline mode is off.
+   *  Always assume that API root has been changed. Otherwise just start todo list activity.
+   *  
+   * @see android.app.Activity#onBackPressed()
+   */
   @Override
   public void onBackPressed() {
-    // Try to re-login on back button click if offline mode is off.
-    // Always assume that API root has been changed.
-    // Otherwise just start todo list activity.
     LocalRemoteTodo.setupPersistence(this);
     
     if (LocalRemoteTodo.isOfflineMode())
@@ -23,6 +29,11 @@ public class SettingsActivity extends Activity {
   }
 
 
+  /**
+   * Inflates activity_settings.xml.
+   * 
+   * @see android.app.Activity#onCreate(android.os.Bundle)
+   */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);

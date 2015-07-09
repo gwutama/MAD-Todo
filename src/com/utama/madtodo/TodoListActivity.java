@@ -12,18 +12,37 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
+/**
+ * The Class TodoListActivity represents an activity for viewing list of tasks.
+ */
 public class TodoListActivity extends Activity {
 
+  /** Whether the tasks were already synchronized with the remote server on start. */
   private static boolean isSynchronizedOnStart;
+  
+  /** The todo list fragment. */
   private TodoListFragment todoListFragment;
   
   
+  /**
+   * The implementation is to close the activity on back button press.
+   * 
+   * @see android.app.Activity#onBackPressed()
+   */
   @Override
   public void onBackPressed() {
     finish();
   }
   
   
+  /**
+   * Inflates activity_todo_list.xml and sets up 
+   * {@link TodoListFragment}. Finally, if the application has connection to the remote web 
+   * service, {@link SyncAsync} will be executed to synchronize local data with tasks 
+   * on the remote server.
+   * 
+   * @see android.app.Activity#onCreate(android.os.Bundle)
+   */
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -40,6 +59,11 @@ public class TodoListActivity extends Activity {
   }
   
   
+  /**
+   * Inflates todolist.xml into menu.
+   * 
+   * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+   */
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.todolist, menu);
@@ -47,6 +71,15 @@ public class TodoListActivity extends Activity {
   }
 
 
+  /**
+   * Based on user menu selection, this method will decide whether:
+   * - {@link SettingsActivity} needs to be shown (if settings menu was chosen)
+   * - whether user needs to be redirected to {@link CreateActivity} (if "new task" menu was chosen)
+   * - async task {@link SyncAsync} is to be executed (if user chooses to manually sync his data)
+   * - Sort the todo list by importance+date or date+importance.
+   * 
+   * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+   */
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
