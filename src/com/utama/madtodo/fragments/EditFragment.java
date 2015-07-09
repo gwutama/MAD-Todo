@@ -48,6 +48,7 @@ public class EditFragment extends CreateFragment {
     expiryDateEditText.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        setupDateTimeDialogs();
         expiryDatePickerDialog.show();
       }
     });
@@ -55,6 +56,7 @@ public class EditFragment extends CreateFragment {
     expiryTimeEditText.setOnClickListener(new OnClickListener() {
       @Override
       public void onClick(View v) {
+        setupDateTimeDialogs();
         expiryTimePickerDialog.show();
       }
     });
@@ -62,6 +64,52 @@ public class EditFragment extends CreateFragment {
     setupDateTimeDialogs();
 
     return view;
+  }
+
+
+  /**
+   * We don't want the expiry to be reset to current date time on resume.
+   * 
+   * @see com.utama.madtodo.fragments.CreateFragment#onResume()
+   */
+  @Override
+  public void onResume() {
+    Calendar oldExpiry = expiry;
+    super.onResume();
+    expiry = oldExpiry;
+  }
+
+
+  /**
+   * Setup the date time dialogs. We want to update date and time pickers to the date and time of
+   * the task's. If the date time of the task was not set, set the dialogs to current date time.
+   * 
+   * @see com.utama.madtodo.fragments.CreateFragment#setupDateTimeDialogs()
+   */
+  @Override
+  protected void setupDateTimeDialogs() {
+    super.setupDateTimeDialogs();
+
+    if (expiry.getTime().getTime() > 0) {
+      int year = expiry.get(Calendar.YEAR);
+      int monthOfYear = expiry.get(Calendar.MONTH);
+      int dayOfMonth = expiry.get(Calendar.DAY_OF_MONTH);
+      expiryDatePickerDialog.updateDate(year, monthOfYear, dayOfMonth);
+
+      int hourOfDay = expiry.get(Calendar.HOUR);
+      int minutOfHour = expiry.get(Calendar.MINUTE);
+      expiryTimePickerDialog.updateTime(hourOfDay, minutOfHour);
+    } else {
+      Calendar now = Calendar.getInstance();
+      int year = now.get(Calendar.YEAR);
+      int monthOfYear = now.get(Calendar.MONTH);
+      int dayOfMonth = now.get(Calendar.DAY_OF_MONTH);
+      expiryDatePickerDialog.updateDate(year, monthOfYear, dayOfMonth);
+
+      int hourOfDay = now.get(Calendar.HOUR);
+      int minutOfHour = now.get(Calendar.MINUTE);
+      expiryTimePickerDialog.updateTime(hourOfDay, minutOfHour);
+    }
   }
 
 
@@ -80,9 +128,7 @@ public class EditFragment extends CreateFragment {
         descriptionEditText.setText(todo.getDescription());
 
         Date expDate = todo.getExpiry();
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(expDate.getTime());
-        expiry = cal;
+        expiry.setTimeInMillis(expDate.getTime());
 
         if (expDate.getTime() > 0) {
           expiryDateEditText.setText(DateFormat.getDateInstance(DateFormat.SHORT).format(expDate));
@@ -116,7 +162,7 @@ public class EditFragment extends CreateFragment {
   /**
    * Builds the todo instance for local and remote operations.
    *
-   * @return The local remote todo instance. 
+   * @return The local remote todo instance.
    * @see com.utama.madtodo.fragments.CreateFragment#buildTodo()
    */
   @Override

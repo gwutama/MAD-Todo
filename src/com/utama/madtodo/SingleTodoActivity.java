@@ -31,6 +31,16 @@ abstract public class SingleTodoActivity extends Activity implements OnClickList
 
 
   /**
+   * Gets the active todo id.
+   *
+   * @return The active todo id
+   */
+  public long getActiveTodoId() {
+    return activeTodoId;
+  }
+
+
+  /**
    * Sets up persistence for managing both local and remote data. Finally sets up
    * the delete dialog if the subclass of this class implements 
    * {@linkplain com.utama.madtodo.ActionDeleteable}.
