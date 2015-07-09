@@ -136,7 +136,7 @@ namespace com.utama.madtodo.fragments {
 }
 
 
-namespace com.utama.madtodo.activities {	
+namespace com.utama.madtodo {	
 
 	' -------------------------------------------------------------------------
 	' ACTIVITIES
@@ -391,7 +391,7 @@ namespace com.utama.madotodo.utils {
 '
 ' *****************************************************************************
 
-namespace com.utama.madtodo.activities {
+namespace com.utama.madtodo {
 	
 	' -------------------------------------------------------------------------
 	' ACTIVITIES

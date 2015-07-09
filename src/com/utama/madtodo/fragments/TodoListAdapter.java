@@ -1,9 +1,10 @@
-package com.utama.madtodo;
+package com.utama.madtodo.fragments;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.utama.madtodo.R;
 import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.models.LocalTodo;
 import com.utama.madtodo.tasks.UpdateImportanceAsync;

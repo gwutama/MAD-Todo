@@ -1,7 +1,9 @@
-package com.utama.madtodo;
+package com.utama.madtodo.fragments;
 
 import java.util.List;
 
+import com.utama.madtodo.DetailsActivity;
+import com.utama.madtodo.R;
 import com.utama.madtodo.models.DbConsts;
 import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.models.LocalTodo;

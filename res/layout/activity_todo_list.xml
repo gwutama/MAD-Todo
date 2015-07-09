@@ -19,7 +19,7 @@
 
     <fragment
         android:id="@+id/todoListFragment"
-        android:name="com.utama.madtodo.TodoListFragment"
+        android:name="com.utama.madtodo.fragments.TodoListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"

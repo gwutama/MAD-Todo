@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/fragment_settings"
-        android:name="com.utama.madtodo.SettingsFragment"
+        android:name="com.utama.madtodo.fragments.SettingsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

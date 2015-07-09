@@ -1,14 +1,15 @@
-package com.utama.madtodo;
+package com.utama.madtodo.fragments;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.utama.madtodo.R;
 import com.utama.madtodo.models.LocalRemoteTodo;
 
 import android.app.DatePickerDialog;
-import android.app.Fragment;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.app.Fragment;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.os.Bundle;

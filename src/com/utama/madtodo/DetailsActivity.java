@@ -1,5 +1,7 @@
 package com.utama.madtodo;
 
+import com.utama.madtodo.fragments.DetailsFragment;
+
 import android.os.Bundle;
 
 

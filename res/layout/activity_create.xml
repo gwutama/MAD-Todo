@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/createFragment"
-        android:name="com.utama.madtodo.CreateFragment"
+        android:name="com.utama.madtodo.fragments.CreateFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

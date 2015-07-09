@@ -1,4 +1,7 @@
-package com.utama.madtodo;
+package com.utama.madtodo.fragments;
+
+import com.utama.madtodo.LoginActivity;
+import com.utama.madtodo.R;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

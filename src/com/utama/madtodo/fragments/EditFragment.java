@@ -1,9 +1,10 @@
-package com.utama.madtodo;
+package com.utama.madtodo.fragments;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.utama.madtodo.R;
 import com.utama.madtodo.models.DbConsts;
 import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.models.LocalTodo;
@@ -11,8 +12,8 @@ import com.utama.madtodo.models.LocalTodo;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 

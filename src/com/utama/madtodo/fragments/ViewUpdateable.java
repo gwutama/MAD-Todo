@@ -1,4 +1,4 @@
-package com.utama.madtodo;
+package com.utama.madtodo.fragments;
 
 interface ViewUpdateable {
 
