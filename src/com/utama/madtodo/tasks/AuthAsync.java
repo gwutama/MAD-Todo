@@ -42,8 +42,8 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
 
 
   /**
-   * The actual operation that runs in background. This will authenticate user with the remote
-   * web service.
+   * The actual operation that runs in background. This will authenticate user with the remote web
+   * service.
    * 
    * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
    */
@@ -54,19 +54,22 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
     } catch (IOException e) {
       e.printStackTrace();
       return R.string.auth_network_error;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return R.string.auth_network_error;
     }
   }
 
 
   /**
-   * After the execution ends, all toast messages (login success or network error) will be shown 
+   * After the execution ends, all toast messages (login success or network error) will be shown
    * except when the authentication fails. In that case, the user will be redirected to the
    * {@link LoginActivity} back, where a much clearer error message will be shown.
    * 
    * On a successful authentication, the user will be redirected to the {@link TodoListActivity}.
    * 
-   * If a network error occurs, the app will try to enable the offline mode. The user will then
-   * be redirected to {@link TodoListActivity} and from then on, the application will work locally.
+   * If a network error occurs, the app will try to enable the offline mode. The user will then be
+   * redirected to {@link TodoListActivity} and from then on, the application will work locally.
    * 
    * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
    */
@@ -102,8 +105,8 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
 
 
   /**
-   * Mak sure that the login progress in LoginActivity is closed. This should not happen
-   * since the user cannot cancel the operation anyway.
+   * Mak sure that the login progress in LoginActivity is closed. This should not happen since the
+   * user cannot cancel the operation anyway.
    * 
    * @see android.os.AsyncTask#onCancelled()
    */

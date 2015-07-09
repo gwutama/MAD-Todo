@@ -6,6 +6,7 @@ import com.utama.madtodo.R;
 import com.utama.madtodo.TodoListActivity;
 import com.utama.madtodo.models.LocalRemoteTodo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -76,8 +77,11 @@ public final class DeleteAsync extends AsyncTask<Long, Void, Integer> {
     super.onPostExecute(result);
     Toast.makeText(context, context.getString(result), Toast.LENGTH_SHORT).show();
 
+    if (result == R.string.network_error)
+      LocalRemoteTodo.switchToOfflineMode((Activity) context);    
+    
     if (result == R.string.delete_success || result == R.string.network_error)
-      context.startActivity(new Intent(context, TodoListActivity.class));
+      context.startActivity(new Intent(context, TodoListActivity.class));    
   }
 
 }
