@@ -17,20 +17,44 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
+/**
+ * The Class TodoListFragment represents a fragment that displays a list of tasks.
+ */
 public class TodoListFragment extends ListFragment {
 
+  /** For debugging purposes */
   private static final String TAG = "TodoListFragment";
+
+  /** The adapter that takes care of the logic of displaying the data. */
   TodoListAdapter adapter;
+
+  /** The todos. */
   List<LocalTodo> todos;
+
+  /** The sort order. */
   private String sortOrder = DbConsts.DEFAULT_SORT;
+
+  /** The offline mode text view. */
   private TextView offlineModeTextView;
-  
-  
+
+
+  /**
+   * Sets the sort order.
+   *
+   * @param sortOrder The sort order. By default this is {@link DbConsts#DEFAULT_SORT} but you can
+   *        pass any "WHERE" clause here.
+   */
   public void setSortOrder(String sortOrder) {
     this.sortOrder = sortOrder;
   }
 
 
+  /**
+   * Sets the todo list adapter for displaying data, checks whether offline mode is active and
+   * displays a warning in {@link TodoListFragment#offlineModeTextView} if it is.
+   * 
+   * @see android.app.Fragment#onActivityCreated(android.os.Bundle)
+   */
   @Override
   public void onActivityCreated(Bundle savedInstanceState) {
     Log.d(TAG, "onActivityCreated");
@@ -39,18 +63,21 @@ public class TodoListFragment extends ListFragment {
     todos = LocalTodo.findAll(sortOrder);
     adapter = new TodoListAdapter(getActivity(), todos);
     setListAdapter(adapter);
-    
+
     offlineModeTextView = (TextView) getActivity().findViewById(R.id.offlineModeTextView);
     offlineModeTextView.setBackgroundColor(0xFFDD792E);
     offlineModeTextView.setTextColor(0xFFFFFFFF);
-    
+
     if (LocalRemoteTodo.isOfflineMode())
       offlineModeTextView.setVisibility(TextView.VISIBLE);
     else
       offlineModeTextView.setVisibility(TextView.GONE);
   }
 
-  
+
+  /**
+   * Force refresh the todo list.
+   */
   public void forceRefreshList() {
     Log.d(TAG, "refreshList");
     todos = LocalTodo.findAll(sortOrder);
@@ -59,7 +86,13 @@ public class TodoListFragment extends ListFragment {
     adapter.notifyDataSetChanged();
   }
 
-  
+
+  /**
+   * Starts {@link DetailsActivity} on item click.
+   * 
+   * @see android.app.ListFragment#onListItemClick(android.widget.ListView, android.view.View, int,
+   *      long)
+   */
   @Override
   public void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);

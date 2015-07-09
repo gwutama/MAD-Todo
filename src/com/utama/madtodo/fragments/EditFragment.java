@@ -18,11 +18,21 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 
 
+/**
+ * The Class EditFragment represents a fragment that contains a form for editing an existing task
+ */
 public class EditFragment extends CreateFragment {
 
+  /** The "is done" check box. */
   private CheckBox isDoneCheckBox;
 
 
+  /**
+   * Inflate fragment_edit.xml, setup the member variables and bind listener classes to them.
+   * 
+   * @see com.utama.madtodo.fragments.CreateFragment#onCreateView(android.view.LayoutInflater,
+   *      android.view.ViewGroup, android.os.Bundle)
+   */
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
@@ -55,6 +65,12 @@ public class EditFragment extends CreateFragment {
   }
 
 
+  /**
+   * This method will set up the text edits and check boxes with the data of a task.
+   * 
+   * @param id The local task id to retrieve.
+   * @see com.utama.madtodo.fragments.ViewUpdateable#updateView(long)
+   */
   public void updateView(long id) {
     if (id != -1) {
       LocalTodo todo = LocalTodo.findOne(id);
@@ -97,6 +113,12 @@ public class EditFragment extends CreateFragment {
   }
 
 
+  /**
+   * Builds the todo instance for local and remote operations.
+   *
+   * @return The local remote todo instance. 
+   * @see com.utama.madtodo.fragments.CreateFragment#buildTodo()
+   */
   @Override
   public LocalRemoteTodo buildTodo() {
     long activeTodoId = getActivity().getIntent().getLongExtra(DbConsts.Column.ID, -1);

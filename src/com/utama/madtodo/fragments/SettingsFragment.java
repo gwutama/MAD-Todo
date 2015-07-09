@@ -15,14 +15,30 @@ import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 
 
+/**
+ * The Class SettingsFragment represents a fragment for modifying app preferences.
+ */
 public class SettingsFragment extends PreferenceFragment
     implements OnSharedPreferenceChangeListener {
 
+  /** The shared preferences object */
   private SharedPreferences prefs;
+
+  /**
+   * The preference screen object, which is the representation of modifiable preferences displayed
+   * in the fragment.
+   */
   PreferenceScreen prefsScreen;
+
+  /** The preferences that are modifiable. */
   private Preference email, password, offlineMode, apiRoot, forgetCredentials;
 
 
+  /**
+   * Set up the preference member variables and bind items on click.
+   * 
+   * @see android.preference.PreferenceFragment#onCreate(android.os.Bundle)
+   */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -38,7 +54,7 @@ public class SettingsFragment extends PreferenceFragment
     apiRoot = prefsMan.findPreference("apiRoot");
 
     forgetCredentials = prefsMan.findPreference("forgetCredentials");
-    forgetCredentials.setOnPreferenceClickListener(new OnPreferenceClickListener() {      
+    forgetCredentials.setOnPreferenceClickListener(new OnPreferenceClickListener() {
       @Override
       public boolean onPreferenceClick(Preference preference) {
         Editor editor = prefs.edit();
@@ -54,23 +70,33 @@ public class SettingsFragment extends PreferenceFragment
 
     prefsScreen.removePreference(email);
     prefsScreen.removePreference(password);
-    
+
     setupOfflineModePreferenceDependencies();
   }
 
-  
+
+  /**
+   * Setup offline mode preference dependencies.
+   */
   void setupOfflineModePreferenceDependencies() {
     boolean value = prefs.getBoolean("offlineMode", false);
     if (value) {
       apiRoot.setEnabled(false);
-      forgetCredentials.setEnabled(false);        
+      forgetCredentials.setEnabled(false);
     } else {
       apiRoot.setEnabled(true);
-      forgetCredentials.setEnabled(true);        
-    }    
+      forgetCredentials.setEnabled(true);
+    }
   }
-  
 
+
+  /**
+   * Based on offlineMode value, enable or disable other preferences (API root and
+   * "forgot credentials" items).
+   * 
+   * @see android.content.SharedPreferences.OnSharedPreferenceChangeListener#onSharedPreferenceChanged(
+   *      android.content.SharedPreferences, java.lang.String)
+   */
   @Override
   public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
     if (key.equals("offlineMode")) {

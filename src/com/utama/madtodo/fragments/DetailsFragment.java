@@ -14,15 +14,34 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
+/**
+ * The Class DetailsFragment represents a fragment that contains a form for viewing details of an
+ * existing task record.
+ */
 public class DetailsFragment extends Fragment implements ViewUpdateable {
 
+  /** The name text view. */
   protected TextView nameTextView;
+
+  /** The description text view. */
   protected TextView descriptionTextView;
+
+  /** The expiry text view. */
   protected TextView expiryTextView;
+
+  /** The "is important" text view. */
   protected TextView isImportantTextView;
+
+  /** The "is done" text view. */
   protected TextView isDoneTextView;
 
 
+  /**
+   * Inflate fragment_details.xml, setup the member variables and bind listener classes to them.
+   * 
+   * @see android.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup,
+   *      android.os.Bundle)
+   */
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
       Bundle savedInstanceState) {
@@ -38,6 +57,12 @@ public class DetailsFragment extends Fragment implements ViewUpdateable {
   }
 
 
+  /**
+   * This method will set up the text views with the data of a task.
+   * 
+   * @param id The local task id to retrieve.
+   * @see com.utama.madtodo.fragments.ViewUpdateable#updateView(long)
+   */
   @Override
   public void updateView(long id) {
     if (id != -1) {
