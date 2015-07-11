@@ -6,6 +6,7 @@ import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.tasks.SyncAsync;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,30 +17,30 @@ import android.view.MenuItem;
  * The Class TodoListActivity represents an activity for viewing list of tasks.
  */
 public class TodoListActivity extends Activity {
-
-  /** Whether the tasks were already synchronized with the remote server on start. */
-  private static boolean isSynchronizedOnStart;
   
   /** The todo list fragment. */
   private TodoListFragment todoListFragment;
   
+  /** The login progress dialog. Will be shown during authentication. */
+  private ProgressDialog saveProgress;  
+  
   
   /**
-   * The implementation is to close the activity on back button press.
+   * The implementation is to close the application on back button press and make sure that
+   * offline mode is disabled.
    * 
    * @see android.app.Activity#onBackPressed()
    */
   @Override
   public void onBackPressed() {
-    finish();
+    LocalRemoteTodo.switchToOnlineMode(this);
+    finishAffinity();
   }
   
   
   /**
-   * Inflates activity_todo_list.xml and sets up 
-   * {@link TodoListFragment}. Finally, if the application has connection to the remote web 
-   * service, {@link SyncAsync} will be executed to synchronize local data with tasks 
-   * on the remote server.
+   * Inflates activity_todo_list.xml and sets up {@link TodoListFragment} and the save progress
+   * dialog.
    * 
    * @see android.app.Activity#onCreate(android.os.Bundle)
    */
@@ -52,10 +53,24 @@ public class TodoListActivity extends Activity {
     todoListFragment =
         (TodoListFragment) getFragmentManager().findFragmentById(R.id.todoListFragment);    
     
-    if(!LocalRemoteTodo.isOfflineMode() && !isSynchronizedOnStart) {
-      isSynchronizedOnStart = true;
-      new SyncAsync(this).execute();
-    }
+    // Progress dialogs
+    saveProgress = new ProgressDialog(this);
+    saveProgress.setTitle(R.string.app_name);
+    saveProgress.setMessage("Saving");
+    saveProgress.setIndeterminate(true);    
+  }
+  
+  
+  /**
+   * Convenient method to show and hide save progress dialog.
+   * 
+   * @param show True to show the progress dialog. False otherwise.
+   */
+  public void showSaveProgressDialog(boolean show) {
+    if (show)
+      saveProgress.show();
+    else
+      saveProgress.hide();
   }
   
   

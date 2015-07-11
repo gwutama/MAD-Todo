@@ -77,6 +77,13 @@ public class SimpleRestClient {
   }
 
   
+  public int getResponseCode() throws IOException {
+    if (conn == null)
+      throw new IOException("HTTP connection is not open");     
+    
+    return conn.getResponseCode();
+  }
+  
   /**
    * Close the connection.
    */
@@ -137,7 +144,7 @@ public class SimpleRestClient {
       throw new IOException("HTTP connection is not open");
 
     OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-    wr.write(body.toString());
+    wr.write(body);
     wr.flush();
   }  
 
@@ -151,8 +158,8 @@ public class SimpleRestClient {
   public void write(JSONObject body) throws IOException {
     if (conn == null)
       throw new IOException("HTTP connection is not open");
-    
-    write(body.toString());
+    String out = body.toString();
+    write(out);
   }  
 
 }
