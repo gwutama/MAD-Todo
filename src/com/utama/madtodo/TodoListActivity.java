@@ -6,6 +6,7 @@ import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.tasks.SyncAsync;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -23,9 +24,13 @@ public class TodoListActivity extends Activity {
   /** The todo list fragment. */
   private TodoListFragment todoListFragment;
   
+  /** The login progress dialog. Will be shown during authentication. */
+  private ProgressDialog saveProgress;  
+  
   
   /**
-   * The implementation is to close the activity on back button press.
+   * The implementation is to close the application on back button press and make sure that
+   * offline mode is disabled.
    * 
    * @see android.app.Activity#onBackPressed()
    */
@@ -57,6 +62,20 @@ public class TodoListActivity extends Activity {
       isSynchronizedOnStart = true;
       new SyncAsync(this).execute();
     }
+    
+    // Progress dialogs
+    saveProgress = new ProgressDialog(this);
+    saveProgress.setTitle(R.string.app_name);
+    saveProgress.setMessage("Saving");
+    saveProgress.setIndeterminate(true);    
+  }
+  
+  
+  public void showSaveProgressDialog(boolean show) {
+    if (show)
+      saveProgress.show();
+    else
+      saveProgress.hide();
   }
   
   

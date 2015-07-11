@@ -3,9 +3,12 @@ package com.utama.madtodo.tasks;
 import com.utama.madtodo.R;
 import com.utama.madtodo.TodoListActivity;
 import com.utama.madtodo.fragments.TodoListFragment;
+import com.utama.madtodo.models.LocalRemoteTodo;
 
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 
@@ -25,7 +28,16 @@ public class UpdateMarkedDoneAsync extends SaveAsync {
     super(context);
   }
 
+  
+  @Override
+  protected void onPreExecute() {
+    super.onPreExecute();
+    
+    if (context instanceof TodoListActivity && !LocalRemoteTodo.isOfflineMode())
+      ((TodoListActivity) context).showSaveProgressDialog(true);
+  }
 
+  
   /**
    * After a successful execution, the todo list will be refreshed. Otherwise an error
    * message will be shown in a toast.
@@ -34,6 +46,15 @@ public class UpdateMarkedDoneAsync extends SaveAsync {
    */
   @Override
   protected void onPostExecute(Integer result) {
+    if (context instanceof TodoListActivity && !LocalRemoteTodo.isOfflineMode())
+      ((TodoListActivity) context).showSaveProgressDialog(false);    
+    
+    if (result == R.string.network_error) {
+      LocalRemoteTodo.switchToOfflineMode((Activity) context); 
+      context.startActivity(new Intent(context, TodoListActivity.class));
+      return;
+    }      
+    
     if ((result == R.string.edit_success || result == R.string.network_error)
         && context instanceof TodoListActivity) {
       TodoListActivity activity = (TodoListActivity) context;
