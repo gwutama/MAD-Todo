@@ -97,10 +97,6 @@ public class LoginActivity extends Activity {
     loginErrorTextView.setTextColor(0xFFFFFFFF);
     loginErrorTextView.setVisibility(TextView.GONE);
 
-    setLoginFailed(getIntent().getBooleanExtra("isLoginFailure", false));
-    if (getLoginFailed())
-      loginErrorTextView.setVisibility(TextView.VISIBLE);
-
 
     // Email edit text
     emailText = (AutoCompleteTextView) findViewById(R.id.authEmailText);
@@ -154,6 +150,8 @@ public class LoginActivity extends Activity {
     testConnectionProgress.setTitle(R.string.app_name);
     testConnectionProgress.setMessage(getString(R.string.auth_testing_connection));
     testConnectionProgress.setIndeterminate(true);
+    
+    LocalRemoteTodo.setupPersistence(this);
   }
 
 
@@ -169,7 +167,11 @@ public class LoginActivity extends Activity {
     showLoginProgress(false);    
     showTestConnectionProgress(false);
     fillInEmailPasswordFieldsFromPreferences();
+    
     runTestConnectionAsync();
+    setLoginFailed(getIntent().getBooleanExtra("isLoginFailure", false));
+    if (getLoginFailed())
+      loginErrorTextView.setVisibility(TextView.VISIBLE);    
   }
   
 
@@ -177,7 +179,7 @@ public class LoginActivity extends Activity {
    * Check whether device has connection to the web service. Otherwise offline mode will be 
    * enabled in TestConnectionAsync and user will be redirected to the todo list activity.
    */
-  private void runTestConnectionAsync() {
+  public void runTestConnectionAsync() {
     showTestConnectionProgress(true);    
     LocalRemoteTodo.setupPersistence(this);
     new TestConnectionAsync(this).execute();    

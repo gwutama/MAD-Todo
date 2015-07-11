@@ -52,6 +52,7 @@ public class TestConnectionAsync extends AsyncTask<Void, Void, Boolean> {
       URL apiRoot = new URL(pref.getString("apiRoot", ""));
       rest = new SimpleRestClient(apiRoot, "GET");
       rest.open();
+      rest.getResponseCode(); //throws IOException on network error
       canContactWebService = true;
     } catch (MalformedURLException e) {
       e.printStackTrace();
@@ -83,7 +84,7 @@ public class TestConnectionAsync extends AsyncTask<Void, Void, Boolean> {
 
     if (context instanceof LoginActivity) {
       LoginActivity activity = (LoginActivity) context;
-      activity.showLoginProgress(false);
+      activity.showTestConnectionProgress(false);      
 
       if (canContactWebService && !activity.getLoginFailed()) {
         activity.attemptAutoLogin();

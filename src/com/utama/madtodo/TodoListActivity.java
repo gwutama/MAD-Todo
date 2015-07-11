@@ -31,7 +31,8 @@ public class TodoListActivity extends Activity {
    */
   @Override
   public void onBackPressed() {
-    finish();
+    LocalRemoteTodo.switchToOnlineMode(this);
+    finishAffinity();
   }
   
   
