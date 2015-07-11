@@ -154,13 +154,6 @@ public class LoginActivity extends Activity {
     testConnectionProgress.setTitle(R.string.app_name);
     testConnectionProgress.setMessage(getString(R.string.auth_testing_connection));
     testConnectionProgress.setIndeterminate(true);
-    
-
-    // Check whether device has connection to the web service. Otherwise offline mode will be 
-    // enabled in TestConnectionAsync and user will be redirected to the todo list activity.
-    showTestConnectionProgress(true);    
-    LocalRemoteTodo.setupPersistence(this);
-    new TestConnectionAsync(this).execute();
   }
 
 
@@ -176,6 +169,18 @@ public class LoginActivity extends Activity {
     showLoginProgress(false);    
     showTestConnectionProgress(false);
     fillInEmailPasswordFieldsFromPreferences();
+    runTestConnectionAsync();
+  }
+  
+
+  /**
+   * Check whether device has connection to the web service. Otherwise offline mode will be 
+   * enabled in TestConnectionAsync and user will be redirected to the todo list activity.
+   */
+  private void runTestConnectionAsync() {
+    showTestConnectionProgress(true);    
+    LocalRemoteTodo.setupPersistence(this);
+    new TestConnectionAsync(this).execute();    
   }
 
 

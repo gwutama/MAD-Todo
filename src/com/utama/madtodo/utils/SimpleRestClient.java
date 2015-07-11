@@ -74,6 +74,8 @@ public class SimpleRestClient {
     conn.setRequestMethod(requestMethod);
     conn.addRequestProperty("Accept", "application/json");
     conn.addRequestProperty("Content-type", "application/json; charset=UTF-8");
+    
+    conn.getResponseCode(); // throws IOException on network error
   }
 
   
