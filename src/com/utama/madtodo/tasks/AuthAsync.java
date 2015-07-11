@@ -66,7 +66,8 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
    * except when the authentication fails. In that case, the user will be redirected to the
    * {@link LoginActivity} back, where a much clearer error message will be shown.
    * 
-   * On a successful authentication, the user will be redirected to the {@link TodoListActivity}.
+   * On a successful authentication, the user will be redirected to the {@link TodoListActivity}
+   * and {@link SyncAsync} will be executed.
    * 
    * If a network error occurs, the app will try to enable the offline mode. The user will then be
    * redirected to {@link TodoListActivity} and from then on, the application will work locally.
@@ -89,6 +90,7 @@ public class AuthAsync extends AsyncTask<Void, Void, Integer> {
 
     switch (result) {
       case R.string.auth_success:
+        new SyncAsync(context).execute();
         context.startActivity(new Intent(context, TodoListActivity.class));
         break;
       case R.string.auth_failure:
