@@ -5,6 +5,7 @@ import java.util.List;
 import com.utama.madtodo.DetailsActivity;
 import com.utama.madtodo.R;
 import com.utama.madtodo.models.DbConsts;
+import com.utama.madtodo.models.DbConsts.Table.Tasks;
 import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.models.LocalTodo;
 
@@ -32,7 +33,7 @@ public class TodoListFragment extends ListFragment {
   List<LocalTodo> todos;
 
   /** The sort order. */
-  private String sortOrder = DbConsts.DEFAULT_SORT;
+  private String sortOrder = Tasks.DEFAULT_SORT;
 
   /** The offline mode text view. */
   private TextView offlineModeTextView;
@@ -106,8 +107,8 @@ public class TodoListFragment extends ListFragment {
     if (fragment != null && fragment.isVisible()) {
       fragment.updateView(id);
     } else {
-      startActivity(new Intent(getActivity(), DetailsActivity.class).putExtra(DbConsts.Column.ID,
-          todo.getId()));
+      startActivity(
+          new Intent(getActivity(), DetailsActivity.class).putExtra(Tasks.Column.ID, todo.getId()));
     }
   }
 

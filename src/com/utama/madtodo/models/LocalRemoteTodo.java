@@ -10,6 +10,7 @@ import org.json.JSONException;
 
 import com.utama.madtodo.R;
 import com.utama.madtodo.TodoListActivity;
+import com.utama.madtodo.models.DbConsts.Table.Tasks;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -217,7 +218,7 @@ public class LocalRemoteTodo extends TodoEntity {
     if (offlineMode)
       throw new IOException();
 
-    String sortOrder = DbConsts.Column.ID + " ASC";
+    String sortOrder = Tasks.Column.ID + " ASC";
     List<LocalTodo> locals = LocalTodo.findAll(sortOrder);
 
     if (locals.size() > 0) {

@@ -1,6 +1,6 @@
 package com.utama.madtodo;
 
-import com.utama.madtodo.models.DbConsts;
+import com.utama.madtodo.models.DbConsts.Table.Tasks;
 import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.tasks.DeleteAsync;
 
@@ -80,7 +80,7 @@ abstract public class SingleTodoActivity extends Activity implements OnClickList
   @Override
   protected void onResume() {
     super.onResume();
-    activeTodoId = getIntent().getLongExtra(DbConsts.Column.ID, -1);
+    activeTodoId = getIntent().getLongExtra(Tasks.Column.ID, -1);
   }
 
 
@@ -122,7 +122,7 @@ abstract public class SingleTodoActivity extends Activity implements OnClickList
         return false;
       case R.id.action_edit:
         startActivity(
-            new Intent(this, EditActivity.class).putExtra(DbConsts.Column.ID, activeTodoId));
+            new Intent(this, EditActivity.class).putExtra(Tasks.Column.ID, activeTodoId));
         return true;
       case R.id.action_delete:
         if (deleteDialog != null)

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.utama.madtodo.models.DbConsts.Table.Tasks;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -118,8 +120,8 @@ public class LocalTodo extends TodoEntity {
       throw new SQLiteException("DbHelper instance is not set");
 
     SQLiteQueryBuilder query = new SQLiteQueryBuilder();
-    query.setTables(DbConsts.TABLE);
-    String whereClause = DbConsts.Column.ID + "=" + id;
+    query.setTables(Tasks.TABLE);
+    String whereClause = Tasks.Column.ID + "=" + id;
     query.appendWhere(whereClause);
 
     SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -131,7 +133,7 @@ public class LocalTodo extends TodoEntity {
 
 
   /**
-   * Find all task records. The results are sorted by {@link DbConsts.DEFAULT_SORT}.
+   * Find all task records. The results are sorted by {@link Tasks.DEFAULT_SORT}.
    *
    * @return A list of {@link LocalTodo} instance.
    */
@@ -144,8 +146,8 @@ public class LocalTodo extends TodoEntity {
    * Find all task records with a specific sorting order.
    *
    * @param sortOrder The sort order. You can supply other "WHERE" clauses other than the ones
-   *        specified by {@link DbConsts.SORT_IMPORTANCE_DATE} or
-   *        {@link DbConsts.SORT_DATE_IMPORTANCE}.
+   *        specified by {@link Tasks.SORT_IMPORTANCE_DATE} or
+   *        {@link Tasks.SORT_DATE_IMPORTANCE}.
    * @return A list of {@link queryAll} instance.
    * @throws SQLiteException Thrown when the {@link DbHelper} instance is not set. Use
    *         {@link #setDbHelper(DbHelper)} to do it before executing this method.
@@ -167,8 +169,8 @@ public class LocalTodo extends TodoEntity {
    * Helper method to retrieve all local tasks records by querying the sql database directly.
    *
    * @param sortOrder The sort order. You can supply other "WHERE" clauses other than the ones
-   *        specified by {@link DbConsts.SORT_IMPORTANCE_DATE} or
-   *        {@link DbConsts.SORT_DATE_IMPORTANCE}.
+   *        specified by {@link Tasks.SORT_IMPORTANCE_DATE} or
+   *        {@link Tasks.SORT_DATE_IMPORTANCE}.
    * @return A database cursor.
    * @throws SQLiteException Thrown when the {@link DbHelper} instance is not set. Use
    *         {@link #setDbHelper(DbHelper)} to do it before executing this method.
@@ -180,10 +182,10 @@ public class LocalTodo extends TodoEntity {
       throw new SQLiteException("DbHelper instance is not set");
 
     SQLiteQueryBuilder query = new SQLiteQueryBuilder();
-    query.setTables(DbConsts.TABLE);
+    query.setTables(Tasks.TABLE);
 
     if (TextUtils.isEmpty(sortOrder) || sortOrder == null)
-      sortOrder = DbConsts.DEFAULT_SORT;
+      sortOrder = Tasks.DEFAULT_SORT;
 
     SQLiteDatabase db = dbHelper.getReadableDatabase();
     Cursor cursor = query.query(db, null, null, null, null, null, sortOrder);
@@ -208,7 +210,7 @@ public class LocalTodo extends TodoEntity {
       throw new IllegalArgumentException("Task name cannot be empty");
 
     ContentValues values = buildValues();
-    values.remove(DbConsts.Column.ID); // because of AUTO INCREMENT property of _id field.
+    values.remove(Tasks.Column.ID); // because of AUTO INCREMENT property of _id field.
     long rowId = create(values);
     id = rowId;
     return rowId;
@@ -231,7 +233,7 @@ public class LocalTodo extends TodoEntity {
 
     SQLiteDatabase db = dbHelper.getWritableDatabase();
     long rowId =
-        db.insertWithOnConflict(DbConsts.TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
+        db.insertWithOnConflict(Tasks.TABLE, null, values, SQLiteDatabase.CONFLICT_IGNORE);
     Log.d(TAG, "Inserted record id: " + rowId);
 
     return rowId;
@@ -277,9 +279,9 @@ public class LocalTodo extends TodoEntity {
     if (dbHelper == null)
       throw new SQLiteException("DbHelper instance is not set");
 
-    String whereClause = DbConsts.Column.ID + "=" + id;
+    String whereClause = Tasks.Column.ID + "=" + id;
     SQLiteDatabase db = dbHelper.getWritableDatabase();
-    int count = db.update(DbConsts.TABLE, values, whereClause, null);
+    int count = db.update(Tasks.TABLE, values, whereClause, null);
     Log.d(TAG, "Updated records: " + count);
 
     return count;
@@ -323,9 +325,9 @@ public class LocalTodo extends TodoEntity {
     if (dbHelper == null)
       throw new SQLiteException("DbHelper instance is not set");
 
-    String whereClause = DbConsts.Column.ID + "=" + id;
+    String whereClause = Tasks.Column.ID + "=" + id;
     SQLiteDatabase db = dbHelper.getWritableDatabase();
-    int count = db.delete(DbConsts.TABLE, whereClause, null);
+    int count = db.delete(Tasks.TABLE, whereClause, null);
     Log.d(TAG, "Deleted records: " + count);
 
     return count;
@@ -360,13 +362,13 @@ public class LocalTodo extends TodoEntity {
    */
   private ContentValues buildValues() {
     ContentValues values = new ContentValues();
-    values.put(DbConsts.Column.ID, id);
-    values.put(DbConsts.Column.REMOTE_ID, remoteId);
-    values.put(DbConsts.Column.NAME, name);
-    values.put(DbConsts.Column.DESCRIPTION, description);
-    values.put(DbConsts.Column.EXPIRY, expiry.getTime());
-    values.put(DbConsts.Column.IS_IMPORTANT, isImportant);
-    values.put(DbConsts.Column.IS_MARKED_DONE, isMarkedDone);
+    values.put(Tasks.Column.ID, id);
+    values.put(Tasks.Column.REMOTE_ID, remoteId);
+    values.put(Tasks.Column.NAME, name);
+    values.put(Tasks.Column.DESCRIPTION, description);
+    values.put(Tasks.Column.EXPIRY, expiry.getTime());
+    values.put(Tasks.Column.IS_IMPORTANT, isImportant);
+    values.put(Tasks.Column.IS_MARKED_DONE, isMarkedDone);
     return values;
   }
 
@@ -377,13 +379,13 @@ public class LocalTodo extends TodoEntity {
    * @param cur A database cursor.
    */
   public void setFromCursor(Cursor cur) {
-    id = cur.getLong(cur.getColumnIndex(DbConsts.Column.ID));
-    remoteId = cur.getLong(cur.getColumnIndex(DbConsts.Column.REMOTE_ID));
-    name = cur.getString(cur.getColumnIndex(DbConsts.Column.NAME));
-    description = cur.getString(cur.getColumnIndex(DbConsts.Column.DESCRIPTION));
-    expiry = new Date(cur.getLong(cur.getColumnIndex(DbConsts.Column.EXPIRY)));
-    isImportant = cur.getInt(cur.getColumnIndex(DbConsts.Column.IS_IMPORTANT)) == 1;
-    isMarkedDone = cur.getInt(cur.getColumnIndex(DbConsts.Column.IS_MARKED_DONE)) == 1;
+    id = cur.getLong(cur.getColumnIndex(Tasks.Column.ID));
+    remoteId = cur.getLong(cur.getColumnIndex(Tasks.Column.REMOTE_ID));
+    name = cur.getString(cur.getColumnIndex(Tasks.Column.NAME));
+    description = cur.getString(cur.getColumnIndex(Tasks.Column.DESCRIPTION));
+    expiry = new Date(cur.getLong(cur.getColumnIndex(Tasks.Column.EXPIRY)));
+    isImportant = cur.getInt(cur.getColumnIndex(Tasks.Column.IS_IMPORTANT)) == 1;
+    isMarkedDone = cur.getInt(cur.getColumnIndex(Tasks.Column.IS_MARKED_DONE)) == 1;
   }
 
 

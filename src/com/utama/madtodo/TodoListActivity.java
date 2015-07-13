@@ -1,7 +1,7 @@
 package com.utama.madtodo;
 
 import com.utama.madtodo.fragments.TodoListFragment;
-import com.utama.madtodo.models.DbConsts;
+import com.utama.madtodo.models.DbConsts.Table.Tasks;
 import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.tasks.SyncAsync;
 
@@ -109,12 +109,12 @@ public class TodoListActivity extends Activity {
         return true;
       case R.id.action_sort_importance_date:
         item.setChecked(true);
-        todoListFragment.setSortOrder(DbConsts.SORT_IMPORTANCE_DATE);
+        todoListFragment.setSortOrder(Tasks.SORT_IMPORTANCE_DATE);
         todoListFragment.forceRefreshList();
         return true;
       case R.id.action_sort_date_importance:
         item.setChecked(true);
-        todoListFragment.setSortOrder(DbConsts.SORT_DATE_IMPORTANCE);
+        todoListFragment.setSortOrder(Tasks.SORT_DATE_IMPORTANCE);
         todoListFragment.forceRefreshList();
         return true;
     }

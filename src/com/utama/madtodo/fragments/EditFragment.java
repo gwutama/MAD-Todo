@@ -5,7 +5,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import com.utama.madtodo.R;
-import com.utama.madtodo.models.DbConsts;
+import com.utama.madtodo.models.DbConsts.Table.Tasks;
 import com.utama.madtodo.models.LocalRemoteTodo;
 import com.utama.madtodo.models.LocalTodo;
 
@@ -167,7 +167,7 @@ public class EditFragment extends CreateFragment {
    */
   @Override
   public LocalRemoteTodo buildTodo() {
-    long activeTodoId = getActivity().getIntent().getLongExtra(DbConsts.Column.ID, -1);
+    long activeTodoId = getActivity().getIntent().getLongExtra(Tasks.Column.ID, -1);
     LocalRemoteTodo todo = LocalRemoteTodo.findOne(activeTodoId);
 
     if (todo != null) {
